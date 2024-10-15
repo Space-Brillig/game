@@ -7,9 +7,8 @@ pygame.init()
 
 #define fps
 clock = pygame.time.Clock()
-fps = 60
 
-#define screen size
+#define screen and screen size
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 800
 
@@ -32,33 +31,32 @@ phase1_button = buttons.Button(100, 300, phase_img, 0.5)
 phase2_button = buttons.Button(100, 400, phase_img, 0.5)
 phase3_button = buttons.Button(100, 500, phase_img, 0.5)
 
-#define creature spawning event
-CREATURES_SPAWN_EVENT = pygame.USEREVENT + 1
-pygame.time.set_timer(CREATURES_SPAWN_EVENT, 1500)  # Spawn every 1500 milliseconds
+#global variables
+points = 0
+speed = 8
+shooting_speed = 10
+lifebar = 1
+phases = [True, True, True]
 
 #creature spawning function
-def spawn_creatures(a_prop, m_prop, r_prop): #spawning based on proportions, respectively: alien, meteor and regenerative item
+def spawn_creatures(props): #spawning based on proportions, respectively: alien, meteor and regenerative item
 
-    props = [a_prop, m_prop, r_prop]
-    props.sort()
-    random = randint(1, props[2])
-    for item in props:
-        if item == a_prop and random <= item:
-            alien = characters.Alien(randint(30, SCREEN_WIDTH - 30), randint(-100, -50))
-            characters.alien_group.add(alien)
-            break
-        elif item == m_prop and random <= item:
-            meteor = characters.Meteor(randint(10, SCREEN_WIDTH - 10), randint(-100, -50), 0.05, "meteor", True)
-            characters.meteor_group.add(meteor)
-            break
-        elif item == r_prop and random <= item:
-            meteor = characters.Meteor(randint(10, SCREEN_WIDTH - 10), randint(-100, -50), 0.7, "r_item", False)
-            characters.meteor_group.add(meteor)
-            break
+    random = randint(1, props[-1]) #generate a number between 1 and the greatest proportion
 
-#create spaceship
-spaceship = characters.Spaceship(int(SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, 5)
-characters.spaceship_group.add(spaceship)
+    if random <= props[0]: #spawn alien
+
+        alien = characters.Alien(randint(30, SCREEN_WIDTH - 30), randint(-100, -50))
+        characters.alien_group.add(alien)
+    
+    elif random <= props[-2] and random > props[0]: #spawn meteor
+
+        meteor = characters.Meteor(randint(10, SCREEN_WIDTH - 10), randint(-100, -50), 0.05, "meteor", True)
+        characters.meteor_group.add(meteor)
+    
+    elif random <= props[-1] and random <= props[-2]: #spawn regenerative item
+
+        meteor = characters.Meteor(randint(10, SCREEN_WIDTH - 10), randint(-100, -50), 0.7, "r_item", False)
+        characters.meteor_group.add(meteor)
 
 #draw background
 def draw_bg(bg):
@@ -75,8 +73,6 @@ def event_handlers():
 #Title Screen function
 def title_screen():
 
-    clock.tick(fps - 30)
-
     #setting the background
     bg = pygame.image.load("src/sprites/background/space.png").convert()
     bg = pygame.transform.scale(bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -85,6 +81,8 @@ def title_screen():
     run = True
     while run:
         
+        clock.tick(80)
+
         draw_bg(bg)
         
         # blackhole animation
@@ -110,17 +108,33 @@ def title_screen():
 def phase_menu():
     
     run = True
-    while run:
+    while run:  
+
+        clock.tick(80)
 
         screen.fill((100, 100, 240))
 
         #actions depending on clicked buttons
         if phase1_button.draw(screen):
+
             return (0) #calls the phase function with phase 1 parameters
-        if phase2_button.draw(screen):
-            return (1) #calls the phase function with phase 2 parameters
-        if phase3_button.draw(screen):
-            return (2) #calls the phase function with phase 3 parameters
+        
+        if phases[0] == True:
+            if phase2_button.draw(screen):
+        
+                return (1) #calls the phase function with phase 2 parameters
+        
+        else:
+            rect = pygame.Rect(100, 400, 150, 100)
+            pygame.draw.rect(screen, (255, 0, 255), rect)
+        
+        if phases[1] == True:
+            if phase3_button.draw(screen):
+                return (2) #calls the phase function with phase 3 parameters
+        
+        else:
+            rect = pygame.Rect(100, 500, 150, 100)
+            pygame.draw.rect(screen, (255, 0, 255), rect)
         
         if event_handlers():
             run = False
@@ -128,7 +142,17 @@ def phase_menu():
         pygame.display.update()
 
 #Phase function
-def phase(background):
+def phase(background, c_speed, props, quota, spawn_event):
+
+    global points
+
+    #define creature spawning event
+    CREATURES_SPAWN_EVENT = pygame.USEREVENT + 1
+    pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
+
+    #create spaceship
+    spaceship = characters.Spaceship(int(SCREEN_WIDTH / 2), SCREEN_HEIGHT - 100, lifebar, speed, shooting_speed)
+    characters.spaceship_group.add(spaceship)
 
     #define background
     bg = pygame.image.load(background).convert()
@@ -136,10 +160,12 @@ def phase(background):
     bg_height = bg.get_height()
     scroll = 0
 
+    caughts = 0 #number of caught aliens
+
     run = True
     while run:
 
-        clock.tick(fps)
+        clock.tick(80)
 
         draw_bg(bg)
         
@@ -151,12 +177,18 @@ def phase(background):
             scroll = 0
 
         #update spaceship
-        spaceship.update(SCREEN_HEIGHT, SCREEN_WIDTH, screen)
+        if spaceship.update(SCREEN_HEIGHT, SCREEN_WIDTH, screen) == False:
+            pygame.display.update()
+            return 1 #game over
 
         #update space groups
         characters.clt_group.update()
-        characters.alien_group.update(SCREEN_WIDTH, SCREEN_HEIGHT)
-        characters.meteor_group.update(SCREEN_HEIGHT, spaceship)
+        for alien in characters.alien_group:
+            if alien.update(SCREEN_WIDTH, SCREEN_HEIGHT, c_speed):
+                points += 10
+                print (points)
+                caughts += 1
+        characters.meteor_group.update(SCREEN_HEIGHT, spaceship, c_speed)
 
         #draw sprite groups
         characters.spaceship_group.draw(screen)
@@ -166,30 +198,53 @@ def phase(background):
         
         #event handlers
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: #quit game
+            if event.type == pygame.QUIT:
+                spaceship.kill()
+                pygame.display.update()
                 run = False
+                return 2 #quit game
             elif event.type == CREATURES_SPAWN_EVENT: #spawn creatures
-                spawn_creatures(5, 7, 10)
+                spawn_creatures(props)
+
+        if caughts == quota:
+            return 0 #game won
 
         pygame.display.update()
 
 #Main game logic
 def main():
-
-    title_result = title_screen()
+    
+    title_result = title_screen() #storing the user's choice
 
     if title_result == 0:
 
-        phase_result = phase_menu()
-        if phase_result == 0:
-            phase("src/sprites/background/bg.png") #phase 1
-        elif phase_result == 1:
-            phase("src/sprites/background/space.png") #phase 2
-        elif phase_result == 2:
-            phase("src/sprites/background/bg.png") #phase 3
+        while True: #looping between phases_menu and the phases
 
-    elif title_result == 1:
-        phase() 
+            phase_menu_result = phase_menu()
+            
+            if phase_menu_result == 0:
+                phase_result = phase("src/sprites/background/bg.png", 5, [5, 10, 15], 20, 1500) #phase 1 parameters
+                if phase_result == 0:
+                    phases[0] = True #phase is passed
+            
+            elif phase_menu_result == 1:
+                phase_result = phase("src/sprites/background/space.png", 7, [4, 12, 17], 30, 1000) #phase 2 parameters
+                if phase_result == 0:
+                    phases[-2] = True #phase is passed
+            
+            elif phase_menu_result == 2:
+                phase_result = phase("src/sprites/background/bg.png", 10, [2, 20, 25], 45, 500) #phase 3 parameters
+                if phase_result == 0:
+                    phases[-1] = True #phase is passed
+            
+            else:
+                break
+            
+            if phase_result == 2:
+                break
+
+    elif title_result == 1: #reboot global variables (new game)
+        print ("calma voy")
     else:
         pygame.quit()
 
