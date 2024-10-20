@@ -10,7 +10,7 @@ pygame.init()
 This is the main file of the game, containing
 the logic of the screen changing based on the
 user's choice. All the other screens of the game appear
-here in their practical form of functionwwss
+here in their practical form of functions
 '''
 
 #Main game logic
@@ -25,7 +25,7 @@ def main():
         #storing the user's choice
         title_screen_result = title_screen.Title_screen()
 
-        #quit game
+        #quit gamew
         if title_screen_result == -1:
             return True
 

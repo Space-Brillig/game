@@ -1,6 +1,6 @@
 import pygame
 import math
-import characters
+import spaceship
 import functions
 import variables
 
@@ -19,20 +19,13 @@ function but with the wanted parameters. Each phase has different:
 #Phase function
 def Phase(background, c_speed, props, quota, spawn_event):
 
-    #clear sprites off screen at function return
-    def clear_sprites(sprites_groups):
-        for characters.sprite_group in sprites_groups:
-            for sprite in characters.sprite_group:
-                sprite.kill()
-                characters.sprite_group.clear(variables.screen, bg)
-
     #define creature spawning event
     CREATURES_SPAWN_EVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
 
-    #create spaceship
-    spaceship = characters.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100, variables.lifebar, variables.clt_speed, True)
-    characters.spaceship_group.add(spaceship)
+    #create spaceship (had to put an 'i' not to confuse lol)
+    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100, variables.lifebar, variables.clt_speed, variables.haspulse)
+    variables.spaceship_group.add(ispaceship)
 
     #define background
     bg = pygame.image.load(background).convert()
@@ -61,34 +54,33 @@ def Phase(background, c_speed, props, quota, spawn_event):
 
         #come back to phase menu
         if variables.back_button.draw(variables.screen):
-            functions.mouse_release()
             action = -1 #come back
             run = False
 
         #update spaceship and check if game's over
-        if spaceship.update(variables.SCREEN_HEIGHT, variables.SCREEN_WIDTH, variables.screen, variables.spaceship_speed, variables.pulse_speed) == False:
+        if ispaceship.update(variables.SCREEN_HEIGHT, variables.SCREEN_WIDTH, variables.screen, variables.spaceship_speed, variables.pulse_speed) == False:
             action = 1 #game over
             run = False
 
         #update space groups
-        for clt in characters.clt_group:
-            if clt.update():
-                variables.points += 3 #points by wrecking a meteor
+        for clt in variables.clt_group:
+            if clt.update(variables.SCREEN_HEIGHT, ispaceship, variables.clt_speed):
+                variables.points += meteor_points #points by wrecking a meteor
                 print (variables.points)
-        for alien in characters.alien_group:
-            if alien.update(variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT, c_speed, spaceship):
-                variables.points += 8 #points by catching alien
+        for alien in variables.alien_group:
+            if alien.update(variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT, c_speed, ispaceship):
+                variables.points += alien_points #points by catching alien
                 print (variables.points)
                 caughts += 1
-        characters.meteor_group.update(variables.SCREEN_HEIGHT, spaceship, c_speed)
-        characters.r_item_group.update(variables.SCREEN_HEIGHT, spaceship, c_speed)
+        variables.meteor_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
+        variables.r_item_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
 
         #draw sprite groups
-        characters.spaceship_group.draw(variables.screen)
-        characters.clt_group.draw(variables.screen)
-        characters.alien_group.draw(variables.screen)
-        characters.r_item_group.draw(variables.screen)
-        characters.meteor_group.draw(variables.screen)
+        variables.spaceship_group.draw(variables.screen)
+        variables.clt_group.draw(variables.screen)
+        variables.alien_group.draw(variables.screen)
+        variables.r_item_group.draw(variables.screen)
+        variables.meteor_group.draw(variables.screen)
         
         #event handlers
         for event in pygame.event.get():
@@ -96,7 +88,11 @@ def Phase(background, c_speed, props, quota, spawn_event):
                 action = -2 #quit game
                 run = False
             elif event.type == CREATURES_SPAWN_EVENT: #spawn creatures
-                functions.spawn_creatures(props)
+                spawn_result = functions.spawn_creatures(props)
+                if spawn_result == 8:
+                    alien_points = spawn_result
+                elif spawn_result:
+                    meteor_points = spawn_result
 
         #check if the quota is reached
         if caughts == quota:
@@ -105,6 +101,6 @@ def Phase(background, c_speed, props, quota, spawn_event):
 
         pygame.display.update()
     
-    clear_sprites([characters.spaceship_group, characters.clt_group, characters.alien_group, characters.r_item_group, characters.meteor_group])
+    functions.clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
     
     return action

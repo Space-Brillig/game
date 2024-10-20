@@ -39,10 +39,25 @@ phase1_button = buttons.Button(100, 300, phase_img, 0.5)
 phase2_button = buttons.Button(100, 400, phase_img, 0.5)
 phase3_button = buttons.Button(100, 500, phase_img, 0.5)
 
+#load spaceship sprites
+spaceship_sprites = [[]]
+for i in range (4):
+    spaceship_sprites[0].append(pygame.image.load(f'src/sprites/spaceship/samples/main/spaceship-{i}.png'))
+    spaceship_sprites[0][i] = pygame.transform.scale(spaceship_sprites[0][i], (int(spaceship_sprites[0][i].get_width() * 2), int(spaceship_sprites[0][i].get_height() * 2)))
+
+#game sprite groups
+spaceship_group = pygame.sprite.Group()
+alien_group = pygame.sprite.Group()
+clt_group = pygame.sprite.Group()
+meteor_group = pygame.sprite.Group()
+r_item_group = pygame.sprite.Group()
+
 #default global variables
+spaceship_now = [True]
 points = 0
 spaceship_speed = 8
-pulse_speed = 2
+haspulse = True
+pulse_speed = 3
 clt_speed = 20
 lifebar = 10
 phases = [False, False, False]

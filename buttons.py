@@ -1,16 +1,9 @@
 import pygame
 
-'''
-This file contains the class referent to the
-buttons used in the entire game
-'''
-
 #Button class
 class Button():
     def __init__(self, x, y, image, scale):
-        width = image.get_width()
-        height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+        self.image = pygame.transform.scale(image, (int(image.get_width() * scale), int(image.get_height() * scale)))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
@@ -25,6 +18,7 @@ class Button():
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 action = True
+                mouse_release()
         
         if pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
@@ -33,3 +27,11 @@ class Button():
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
         return action
+
+#wait for mouse release in screen changing
+def mouse_release():
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP:  # Wait until mouse button is released
+                waiting = False

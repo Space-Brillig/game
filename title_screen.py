@@ -40,16 +40,14 @@ def Title_screen():
 
         #actions depending on clicked buttons
         if variables.continue_button.draw(variables.screen):
-            functions.mouse_release()
             return 0 #go to phase menu function
         if variables.new_game_button.draw(variables.screen):
-            functions.mouse_release()
             return 1 #new game
         if variables.shopping_button.draw(variables.screen):
-            functions.mouse_release()
             return 2 #go to the market
         
+        #quit game
         if functions.event_handlers():
-            return -1 #quit game
+            return -1
 
         pygame.display.update()
