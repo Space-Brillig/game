@@ -1,5 +1,10 @@
 import pygame
 
+'''
+This file contains the class referent to the
+buttons used in the entire game
+'''
+
 #Button class
 class Button():
     def __init__(self, x, y, image, scale):
