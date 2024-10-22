@@ -13,6 +13,13 @@ user's choice. All the other screens of the game appear
 here in their practical form of functions
 '''
 
+#load game's songs
+clairdelune = pygame.mixer.Sound('assets/music/ClairdeLune-Debussy&Vinheteiro.mp3')
+sonata_1stmovement = pygame.mixer.Sound('assets/music/MoonlightSonata(1stMovement)-Beethoven&EmilGilels.mp3')
+sonata_2ndmovement = pygame.mixer.Sound('assets/music/MoonlightSonata(2ndMovement)-Beethoven&Rosseou.mp3')
+sonata_3rdmovement = pygame.mixer.Sound('assets/music/MoonlightSonata(3rdMovement)-Beethoven&Rosseou.mp3')
+preludium = pygame.mixer.Sound('assets/music/PreludiuminCmajor-Bach&TatianaNikolayeva.mp3')
+
 #Main game logic
 def main():
 

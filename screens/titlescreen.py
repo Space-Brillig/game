@@ -13,6 +13,16 @@ we can decide whether to:
 - visit the market
 '''
 
+#load title screen buttons' images
+continue_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
+new_game_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
+shopping_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
+
+#create title screen buttons' instances
+continue_button = buttons.Button(100, 400, continue_button_img, 0.6)
+new_game_button = buttons.Button(100, 500, new_game_button_img, 0.6)
+shopping_button = buttons.Button(100, 600, shopping_button_img, 0.6)
+
 #Title Screen function
 def Title_screen():
 
@@ -41,11 +51,11 @@ def Title_screen():
         variables.screen.blit(blackhole[index], (variables.SCREEN_WIDTH // 6, 10))
 
         #actions depending on clicked buttons
-        if variables.continue_button.draw(variables.screen):
+        if continue_button.draw(variables.screen):
             return 0 #go to phase menu function
-        if variables.new_game_button.draw(variables.screen):
+        if new_game_button.draw(variables.screen):
             return 1 #new game
-        if variables.shopping_button.draw(variables.screen):
+        if shopping_button.draw(variables.screen):
             return 2 #go to the market
         
         #quit game

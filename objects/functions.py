@@ -40,20 +40,20 @@ def spawn_creatures(props): #spawning based on proportions, respectively: alien,
         size = randint(1, 3) #generating random size
         if size == 1:
             #small meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.05, "meteor", True, False, 0, 1, 1)
+            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.05, "meteor", 0, 1, 1)
         elif size == 2:
             #medium meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.1, "meteor", True, False, 0, 1.5, 2)
+            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.1, "meteor", 0, 1.5, 2)
         else:
             #big meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.15, "meteor", True, False, 0, 2, 3)
+            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.15, "meteor", 0, 2, 3)
         variables.meteor_group.add(meteor)
         return meteor.points
     
     elif random > props[0] and random > props[1]:
 
         #spawn regenerative item
-        r_item = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.7, "r_item", False, False, 0, 0, 0)
+        r_item = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.7, "r_item"'1, 0, 0, 0)
         variables.r_item_group.add(r_item)
         return False
     

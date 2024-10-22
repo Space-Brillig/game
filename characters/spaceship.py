@@ -8,39 +8,39 @@ green = (0, 255, 0)
 
 #Spaceship class
 class Spaceship(pygame.sprite.Sprite):
-    def __init__(self, x, y, health, clt_speed):
+    def __init__(self, x, y, health):
         pygame.sprite.Sprite.__init__(self)
-        self.image = variables.spaceship_sprites[variables.spaceship_now.index(True)][0]
+        if variables.plumes["sprite"]:
+            self.image = pygame.image.load('assets/sprites/spaceship/samples/spaceship-0.png')
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
         self.health_start = health
-        self.clt_speed = clt_speed
         self.health_remaining = health
         self.last_shot = pygame.time.get_ticks()
         
         #set correct lengths depending on the selected engine
-        if variables.engine.index(True) == 0:
+        if variables.plumes["engine"].index(True) == 0:
             engine_now = "BaseEngine"
             self.speed = 5
             length_on = 4
             length_off = 3
             self.e_coordon = (0, 8)
             self.e_coordff = self.e_coordon
-        elif variables.engine.index(True) == 1:
+        elif variables.plumes["engine"].index(True) == 1:,
             engine_now = "BigPulseEngine"
             self.speed = 6
             length_on = 4
             length_off = 4
             self.e_coordon = (32, 76)
             self.e_coordff = (-1, 10)
-        elif variables.engine.index(True) == 2:
+        elif variables.plumes["engine"].index(True) == 2:
             engine_now = "BurstEngine"
             self.speed = 7
             length_on = 6
             length_off = 7
             self.e_coordon = (39, 78)
             self.e_coordff = self.e_coordon
-        elif variables.engine.index(True) == 3:
+        elif variables.plumes["engine"].index(True) == 3:
             engine_now = "SuperchargedEngine"
             self.speed = 8
             length_on = 4
@@ -105,7 +105,7 @@ class Spaceship(pygame.sprite.Sprite):
         cooldown = 500 #cooldown variable
         time_now = pygame.time.get_ticks()
         if key[pygame.K_SPACE] and time_now - self.last_shot > cooldown:
-            clt = projectile.Projectile(self.rect.centerx, self.rect.top, 1, "clt", False, True, self.clt_speed, 0, 0)
+            clt = projectile.Projectile(self.rect.centerx, self.rect.top, 1, "clt", 0, 0)
             variables.clt_group.add(clt)
             self.last_shot = time_now
 
@@ -118,7 +118,8 @@ class Spaceship(pygame.sprite.Sprite):
             pygame.draw.rect(SURFACE, green, (self.rect.x, (self.rect.top - 20), int(self.rect.width * (self.health_remaining / self.health_start)), 15))
         else:
             self.kill()
-            return False #out of life
+            return False #game over
+
         #damaged spaceship sprites
         if self.health_remaining <= 3 * self.health_start // 4 and self.health_remaining > self.health_start // 2:
             self.image = variables.spaceship_sprites[variables.spaceship_now.index(True)][1] #3/4 ~ 1/2 of life
