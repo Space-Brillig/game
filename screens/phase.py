@@ -24,7 +24,7 @@ def Phase(background, c_speed, props, quota, spawn_event):
     pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
 
     #create spaceship (had to put an 'i' not to confuse lol)
-    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100, variables.lifebar, variables.clt_speed, variables.haspulse)
+    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100, variables.lifebar, variables.clt_speed)
     variables.spaceship_group.add(ispaceship)
 
     #define background
@@ -61,7 +61,7 @@ def Phase(background, c_speed, props, quota, spawn_event):
             run = False
 
         #update spaceship and check if game's over
-        if ispaceship.update(variables.SCREEN_HEIGHT, variables.SCREEN_WIDTH, variables.screen, variables.spaceship_speed, variables.pulse_speed) == False:
+        if ispaceship.update(variables.SCREEN_HEIGHT, variables.SCREEN_WIDTH, variables.screen) == False:
             action = 1 #game over
             run = False
 

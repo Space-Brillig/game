@@ -54,6 +54,9 @@ for i in range (4):
     spaceship_sprites[0].append(pygame.image.load(f'assets/sprites/spaceship/samples/main/spaceship-{i}.png'))
     spaceship_sprites[0][i] = pygame.transform.scale(spaceship_sprites[0][i], (int(spaceship_sprites[0][i].get_width() * 2), int(spaceship_sprites[0][i].get_height() * 2)))
 
+#manage selected engine: Base, Big Pulse, Burst and Supercharged
+engine = [False, False, False, True]
+
 #game sprite groups
 spaceship_group = pygame.sprite.Group()
 alien_group = pygame.sprite.Group()
@@ -64,9 +67,6 @@ r_item_group = pygame.sprite.Group()
 #default global variables
 spaceship_now = [True]
 points = 0
-spaceship_speed = 8
-haspulse = True
-pulse_speed = 3
 clt_speed = 20
 lifebar = 10
 phases = [True, True, True]
