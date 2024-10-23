@@ -24,7 +24,7 @@ def Phase(background, c_speed, props, quota, spawn_event):
     pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
 
     #create spaceship (had to put an 'i' not to confuse lol)
-    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100, variables.lifebar, variables.clt_speed)
+    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100)
     variables.spaceship_group.add(ispaceship)
 
     #define background
@@ -34,9 +34,9 @@ def Phase(background, c_speed, props, quota, spawn_event):
     scroll = 0
 
     points_before = variables.points
-    caughts = 0 #number of caught aliens
+    caughts = 0
 
-    action = 0 #-1 if going back, -2 if game's quit, 0 if game's won, 1 if game's over
+    action = 0 #-2 if game's quit, -1 if going back, 0 if game's won, 1 if game's over
 
     run = True
     while run:
@@ -55,8 +55,6 @@ def Phase(background, c_speed, props, quota, spawn_event):
 
         #come back to phase menu
         if variables.back_button.draw(variables.screen):
-            #the phase hasn't being concluded, so the adquired points mustn't be counted
-            variables.points = points_before
             action = -1 #come back
             run = False
 
@@ -75,6 +73,7 @@ def Phase(background, c_speed, props, quota, spawn_event):
                 variables.points += alien_points #points by catching alien
                 print (variables.points)
                 caughts += 1
+
         variables.meteor_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
         variables.r_item_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
 
@@ -108,4 +107,8 @@ def Phase(background, c_speed, props, quota, spawn_event):
     
     functions.clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
     
+    #the phase hasn't being concluded, so the adquired points mustn't be counted
+    if action == -1 or action == -2 or action == 0:
+        variables.points = points_before
+
     return action

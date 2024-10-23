@@ -11,7 +11,7 @@ class Projectile(pygame.sprite.Sprite):
         self.damage = damage
         self.points = points
         self.rect = self.image.get_rect()
-        self.rect.center = [x, y]
+        self.rect.center = (x, y)
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, SURFACE_HEIGHT, ispaceship, speed):
@@ -31,7 +31,7 @@ class Projectile(pygame.sprite.Sprite):
                     ispaceship.health_remaining += 1
         #it's clt
         else:
-            self.rect.y -= variables.shooting_speed
+            self.rect.y -= variables.clt_speed
             if pygame.sprite.spritecollide(self, variables.meteor_group, True, pygame.sprite.collide_mask):
                 self.kill()
                 return True

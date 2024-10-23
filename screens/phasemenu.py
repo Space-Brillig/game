@@ -1,4 +1,5 @@
 import pygame
+import objects.buttons as buttons
 import objects.variables as variables
 import objects.functions as functions
 
@@ -41,7 +42,7 @@ def Phase_menu():
         
         if variables.phases[1]:
             if phase3_button.draw(variables.screen):
-                return (2) #calls the phase function with phase 3 parameters if phase 2 was passed
+                return 2 #calls the phase function with phase 3 parameters if phase 2 was passed
         else:
             rect = pygame.Rect(100, 500, 150, 100)
             pygame.draw.rect(variables.screen, (255, 0, 255), rect)

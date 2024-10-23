@@ -1,6 +1,7 @@
 import pygame
 import objects.functions as functions
 import objects.variables as variables
+import objects.buttons as buttons
 
 pygame.mixer.init()
 
@@ -23,18 +24,18 @@ continue_button = buttons.Button(100, 400, continue_button_img, 0.6)
 new_game_button = buttons.Button(100, 500, new_game_button_img, 0.6)
 shopping_button = buttons.Button(100, 600, shopping_button_img, 0.6)
 
+#load blackhole' images
+blackhole = []
+for i in range (1, 50):
+    blackhole.append(pygame.image.load(f"assets/sprites/background/blackhole/frame-{i}.gif").convert())
+    blackhole[i - 1] = pygame.transform.scale(blackhole[i - 1], (int(blackhole[i - 1].get_width() * 2), int(blackhole[i - 1].get_height() * 2)))
+
 #Title Screen function
 def Title_screen():
 
     #setting the background
     bg = pygame.image.load("assets/sprites/background/space.png").convert()
     bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
-
-    #loading the blackhole' images
-    blackhole = []
-    for i in range (1, 50):
-        blackhole.append(pygame.image.load(f"assets/sprites/background/blackhole/frame-{i}.gif").convert())
-        blackhole[i - 1] = pygame.transform.scale(blackhole[i - 1], (int(blackhole[i - 1].get_width() * 2), int(blackhole[i - 1].get_height() * 2)))
     index = 0
 
     while True:

@@ -21,14 +21,14 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("The Extraordinary Jobs Galaxy!")
 
 #define global buttons
-back_button = buttons.Button(10, 10, shopping_button_img, 0.6),,,
 menu_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
 back_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
+back_button = buttons.Button(10, 10, back_button_img, 0.6)
 
 #manage selected sprite
 #manage selected engine: Base Engine, Big Pulse Engine, Burst Engine, Supercharged Engine
 #manage selected shield: Invisibility Shield, Round Shield, Front, Side Shield
-plumes = {"sprite": [True],"engine": [True, False, False, False], "shield": [False, False, False]}
+plumes = {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}
 
 #game sprite groups
 spaceship_group = pygame.sprite.Group()
@@ -38,7 +38,6 @@ meteor_group = pygame.sprite.Group()
 r_item_group = pygame.sprite.Group()
 
 #default global variables
-spaceship_now = [True]
 points = 0
 clt_speed = 20
 lifebar = 10

@@ -8,7 +8,7 @@ class Alien(pygame.sprite.Sprite):
         self.image = pygame.image.load("assets/sprites/alien/shrek.jpeg")
         self.width = self.image.get_width()
         self.rect = self.image.get_rect()
-        self.rect.center = [x, y]
+        self.rect.center = (x, y)
         self.mask = pygame.mask.from_surface(self.image)
         self.caught = False
     
