@@ -3,6 +3,7 @@ import math
 import characters.spaceship as spaceship
 import objects.functions as functions
 import objects.variables as variables
+import screens.texts as texts
 
 '''
 This is the main function to all phases in the game.
@@ -17,7 +18,7 @@ function but with the wanted parameters. Each phase has different:
 '''
 
 #Phase function
-def Phase(background, c_speed, props, quota, spawn_event):
+def Phase(background, c_speed, props, quota, spawn_event, song):
 
     #define creature spawning event
     CREATURES_SPAWN_EVENT = pygame.USEREVENT + 1
@@ -53,6 +54,12 @@ def Phase(background, c_speed, props, quota, spawn_event):
         if abs(scroll) > bg_height:
             scroll = 0
 
+        #display bitcoins and number of caught aliens on screen
+        caughts_icon = texts.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
+        points_icon = texts.font.render(f'BITCOINS: {variables.points}', True, 'white')
+        variables.screen.blit(caughts_icon, (variables.SCREEN_WIDTH - caughts_icon.get_width() - 10, 10))
+        variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_icon.get_width() * 0.5, 10))
+
         #come back to phase menu
         if variables.back_button.draw(variables.screen):
             action = -1 #come back
@@ -67,11 +74,9 @@ def Phase(background, c_speed, props, quota, spawn_event):
         for clt in variables.clt_group:
             if clt.update(variables.SCREEN_HEIGHT, ispaceship, variables.clt_speed):
                 variables.points += meteor_points #points by wrecking a meteor
-                print (variables.points)
         for alien in variables.alien_group:
             if alien.update(variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT, c_speed, ispaceship):
                 variables.points += alien_points #points by catching alien
-                print (variables.points)
                 caughts += 1
 
         variables.meteor_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
@@ -105,10 +110,31 @@ def Phase(background, c_speed, props, quota, spawn_event):
 
         pygame.display.update()
     
-    functions.clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
-    
     #the phase hasn't being concluded, so the adquired points mustn't be counted
-    if action == -1 or action == -2 or action == 0:
+    if action == -1 or action == -2 or action == 1:
+        pygame.mixer.init()
+        song.stop()
         variables.points = points_before
+    
+    #final phase dialogue
+    if action == 0:
+        text = [
+            'Muito bem, [player_name].',
+            'Já está bom por agora.',
+            'Vamos voltar para o alojamento...',
+            '          Phase passed'
+        ]
+    elif action == 1:
+        text = [
+            'Augh, vamos recuar, [player_name]!',
+            'Esta nave precisa de reparos...',
+            '           Phase not passed'
+        ]
+    if action == 0 or action == 1:
+        functions.darken_screen(song, (0, 0, 0))
+        if not texts.dialogue(text, False, False, True, "white",False):
+            action = -2
+
+    functions.clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
 
     return action

@@ -23,7 +23,8 @@ def darken_screen(song, color):
     surface = pygame.Surface((variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
     surface.set_alpha(alpha)
     surface.fill(color)
-    song.fadeout(5000)
+    if not song == False:
+        song.fadeout(5000)
     while surface.get_alpha() < 255:
         variables.clock.tick(2)
         alpha += 50

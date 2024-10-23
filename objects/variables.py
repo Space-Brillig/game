@@ -41,4 +41,4 @@ r_item_group = pygame.sprite.Group()
 points = 0
 clt_speed = 20
 lifebar = 10
-screens = [False, True, True, True] #initial screen, phase 1, phase 2, phase 3
+screens = [False, False, False, False] #initial screen, phase 1, phase 2, phase 3

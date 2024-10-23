@@ -1,5 +1,5 @@
 import pygame
-import screens.initialscreen as initialscreen
+import screens.texts as texts
 import screens.titlescreen as titlescreen
 import screens.phasemenu as phasemenu
 import screens.phase as phase
@@ -26,7 +26,30 @@ def main():
 
     #first interaction
     if not variables.screens[0]:
-        if not initialscreen.Initialscreen(clairdelune):
+        text = [
+            'Hum... o que fazes aí? Erm...',
+            'Qual é o seu nome?',
+            'Ah... sim... deixe-me te contar uma história, [player_name]...',
+            'Tudo começou há cerca de 10000 atrás...',
+            'Numa época em que as bússolas apontavam para o sul...',
+            'Quando a água não satisfazia a sede...',
+            'E quando o céu não era azul...',
+            'Quando os arvoredos não eram verdes...',
+            'E quando em todas coisas faltava luz...',
+            'Isto, meu querido...',
+            'Quando o mundo era Briluz.',
+            'Você talvez já tenha ouvido falar...',
+            'Ante a infinita multiplicidade do universo disperso em facetas...',
+            'Havia um planeta.',
+            'O planeta mais próspero que você pode imaginar...',
+            'E era o homem quem ditava as regras neste lugar.',
+            'Mas, afinal de contas...',
+            'O que era o homem?',
+            'O que era o homem, a não ser um bicho...',
+            'Um bicho egoísta, ganancioso e avarento...',
+            '. . .',
+            ]
+        if not texts.dialogue(text, True, True, True, "black", clairdelune):
             return True
 
     sonata_1stmovement.play(-1)
@@ -64,26 +87,20 @@ def main():
                 #go to phase 1
                 if phase_menu_result == 0:
                     clairdelune.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/bg.png", 5, [10, 15, 17], 5, 1500) #phase 1 parameters
+                    phase_result = phase.Phase("assets/sprites/background/bg.png", 5, [10, 15, 17], 5, 1500, clairdelune) #phase 1 parameters
                     phase_passed = 1
-
-                    clairdelune.stop()
                 
                 #go to phase 2
                 elif phase_menu_result == 1:
                     sonata_2ndmovement.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/space.png", 7, [4, 12, 17], 30, 1000) #phase 2 parameters
+                    phase_result = phase.Phase("assets/sprites/background/space.png", 7, [4, 12, 17], 30, 1000, sonata_2ndmovement) #phase 2 parameters
                     phase_passed = 2
-
-                    sonata_2ndmovement.stop()
                 
                 #go to phase 3
                 elif phase_menu_result == 2:
                     sonata_3rdmovement.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/bg.png", 10, [2, 20, 25], 45, 500) #phase 3 parameters
+                    phase_result = phase.Phase("assets/sprites/background/bg.png", 10, [2, 20, 25], 45, 500, sonata_3rdmovement) #phase 3 parameters
                     phase_passed = 3
-
-                    sonata_3rdmovement.stop()
 
                 if phase_result == -2:
                     return True #game is closed
