@@ -1,4 +1,5 @@
 import pygame
+import screens.initialscreen as initialscreen
 import screens.titlescreen as titlescreen
 import screens.phasemenu as phasemenu
 import screens.phase as phase
@@ -23,6 +24,11 @@ preludium = pygame.mixer.Sound('assets/music/PreludiuminCmajor-Bach&TatianaNikol
 #Main game logic
 def main():
 
+    #first interaction
+    if not variables.screens[0]:
+        if not initialscreen.Initialscreen(clairdelune):
+            return True
+
     sonata_1stmovement.play(-1)
 
     #looping between title_screen and phases_menu
@@ -34,7 +40,7 @@ def main():
         #storing the user's choice
         title_screen_result = titlescreen.Title_screen()
 
-        #quit gamew
+        #quit game
         if title_screen_result == -1:
             return True
 
@@ -59,7 +65,7 @@ def main():
                 if phase_menu_result == 0:
                     clairdelune.play(-1)
                     phase_result = phase.Phase("assets/sprites/background/bg.png", 5, [10, 15, 17], 5, 1500) #phase 1 parameters
-                    phase_passed = 0
+                    phase_passed = 1
 
                     clairdelune.stop()
                 
@@ -67,7 +73,7 @@ def main():
                 elif phase_menu_result == 1:
                     sonata_2ndmovement.play(-1)
                     phase_result = phase.Phase("assets/sprites/background/space.png", 7, [4, 12, 17], 30, 1000) #phase 2 parameters
-                    phase_passed = 1
+                    phase_passed = 2
 
                     sonata_2ndmovement.stop()
                 
@@ -75,14 +81,14 @@ def main():
                 elif phase_menu_result == 2:
                     sonata_3rdmovement.play(-1)
                     phase_result = phase.Phase("assets/sprites/background/bg.png", 10, [2, 20, 25], 45, 500) #phase 3 parameters
-                    phase_passed = 2
+                    phase_passed = 3
 
                     sonata_3rdmovement.stop()
 
                 if phase_result == -2:
                     return True #game is closed
                 elif phase_result == 0:
-                    variables.phases[phase_passed] = True #phase is passed
+                    variables.screens[phase_passed] = True #phase is passed
                 
                 sonata_1stmovement.play(-1)
 

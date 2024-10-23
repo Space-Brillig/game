@@ -15,6 +15,24 @@ def draw_bg(bg):
      
     variables.screen.blit(bg, (0,0))
 
+#darken screen
+def darken_screen(song, color):
+
+    pygame.mixer.init()
+    alpha = 0
+    surface = pygame.Surface((variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
+    surface.set_alpha(alpha)
+    surface.fill(color)
+    song.fadeout(5000)
+    while surface.get_alpha() < 255:
+        variables.clock.tick(2)
+        alpha += 50
+        surface.set_alpha(alpha)
+        variables.screen.blit(surface, (0, 0))
+        if event_handlers():
+            return False
+        pygame.display.update()
+
 #event handlers
 def event_handlers():
 

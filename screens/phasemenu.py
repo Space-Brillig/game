@@ -33,14 +33,14 @@ def Phase_menu():
             return -1 # go back
         if phase1_button.draw(variables.screen):
             return 0 #calls the phase function with phase 1 parameters
-        if variables.phases[0]:
+        if variables.screens[1]:
             if phase2_button.draw(variables.screen):
                 return 1 #calls the phase function with phase 2 parameters if phase 1 was passed
         else:
             rect = pygame.Rect(100, 400, 150, 100)
             pygame.draw.rect(variables.screen, (255, 0, 255), rect)
         
-        if variables.phases[1]:
+        if variables.screens[2]:
             if phase3_button.draw(variables.screen):
                 return 2 #calls the phase function with phase 3 parameters if phase 2 was passed
         else:

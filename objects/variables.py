@@ -14,7 +14,7 @@ clock = pygame.time.Clock()
 fps = 80
 
 #define screen and screen size
-SCREEN_WIDTH = 600
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -41,4 +41,4 @@ r_item_group = pygame.sprite.Group()
 points = 0
 clt_speed = 20
 lifebar = 10
-phases = [True, True, True]
+screens = [False, True, True, True] #initial screen, phase 1, phase 2, phase 3
