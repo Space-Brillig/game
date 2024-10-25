@@ -20,7 +20,7 @@ def darken_screen(song, color):
 
     pygame.mixer.init()
     alpha = 0
-    surface = pygame.Surface((variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
+    surface = pygame.Surface((variables.screen.get_width(), variables.screen.get_height()))
     surface.set_alpha(alpha)
     surface.fill(color)
     if not song == False:
@@ -36,10 +36,14 @@ def darken_screen(song, color):
 
 #event handlers
 def event_handlers():
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT: #quit game
             return True
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                return False
+        elif event.type == pygame.VIDEORESIZE:
+            variables.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
         
 #creature spawning function
 def spawn_creatures(props): #spawning based on proportions, respectively: alien, meteor and regenerative item
@@ -49,9 +53,9 @@ def spawn_creatures(props): #spawning based on proportions, respectively: alien,
     if random <= props[0]: 
 
         #spawn alien
-        Alien = alien.Alien(randint(30, variables.SCREEN_WIDTH - 30), randint(-100, -50))
+        Alien = alien.Alien(randint(30, variables.screen.get_width() - 30), randint(-100, -50))
         variables.alien_group.add(Alien)
-        return 8
+        return False
     
     elif random <= props[1] and random > props[0]: 
 
@@ -59,20 +63,24 @@ def spawn_creatures(props): #spawning based on proportions, respectively: alien,
         size = randint(1, 3) #generating random size
         if size == 1:
             #small meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.05, "meteor", 1, 1)
+            meteor = projectile.Projectile(randint(10, variables.screen.get_width() - 10), randint(-100, -50), 1, True, 1)
+            meteor_points = 1
         elif size == 2:
             #medium meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.1, "meteor", 1.5, 2)
+            meteor = projectile.Projectile(randint(10, variables.screen.get_width() - 10), randint(-100, -50), 3, True, 1.5)
+            meteor_points = 2
         else:
             #big meteor
-            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.15, "meteor", 2, 3)
+            meteor = projectile.Projectile(randint(10, variables.screen.get_width() - 10), randint(-100, -50), 5, True, 2)
+            meteor_points = 3
         variables.meteor_group.add(meteor)
-        return meteor.points
+        
+        return meteor_points
     
     elif random > props[0] and random > props[1]:
 
         #spawn regenerative item
-        r_item = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 0.7, "r_item", 0, 0)
+        r_item = projectile.Projectile(randint(10, variables.screen.get_width() - 10), randint(-100, -50), 0.7, False, 0)
         variables.r_item_group.add(r_item)
         return False
     

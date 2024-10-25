@@ -1,7 +1,7 @@
 import pygame
 import objects.buttons as buttons
 
-pygame.mixer.init()
+pygame.init()
 
 '''
 This is the file containing most of the game variables,
@@ -17,8 +17,8 @@ fps = 80
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("The Extraordinary Jobs Galaxy!")
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+pygame.display.set_caption("The Extraordinary Jobs' Galaxy!")
 
 #define global buttons
 menu_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
@@ -41,4 +41,4 @@ r_item_group = pygame.sprite.Group()
 points = 0
 clt_speed = 20
 lifebar = 10
-screens = [False, False, False, False] #initial screen, phase 1, phase 2, phase 3
+screens = [True, False, True, True] #initial screen, phase 1, phase 2, phase 3

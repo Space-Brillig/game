@@ -14,7 +14,7 @@ def dialogue(text, background, text_box, hasfade, color, song):
     #load background image
     if not background == False:
         bg = pygame.image.load('assets/sprites/background/initialscenebackground.png')
-        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
+        bg = pygame.transform.scale(bg, (variables.screen.get_width(), variables.screen.get_height()))
 
     if not song == False:
         song.play(-1)
@@ -30,7 +30,7 @@ def dialogue(text, background, text_box, hasfade, color, song):
         if not background == False:
             functions.draw_bg(bg)
         else:
-            pygame.draw.rect(variables.screen, 'black', [0, 0, variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT])
+            pygame.draw.rect(variables.screen, 'black', [0, 0, variables.screen.get_width(), variables.screen.get_height()])
 
         #set fps
         variables.clock.tick(60)
@@ -47,7 +47,7 @@ def dialogue(text, background, text_box, hasfade, color, song):
 
         #next sentence if space is pressed
         key = pygame.key.get_pressed()
-        if key[pygame.K_RETURN] and done and index < len(text):
+        if (key[pygame.K_RETURN] or key[pygame.K_SPACE] or pygame.mouse.get_pressed()[0] == 1) and done and index < len(text):
             index += 1
             done = False
             counter = 0

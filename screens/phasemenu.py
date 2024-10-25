@@ -28,8 +28,12 @@ def Phase_menu():
         
         variables.screen.fill((100, 100, 240))
 
+        event = functions.event_handlers()
+        if event == True:
+            return -2 #quit game
+
         #actions depending on clicked buttons
-        if variables.back_button.draw(variables.screen):
+        if variables.back_button.draw(variables.screen) or event == False:
             return -1 # go back
         if phase1_button.draw(variables.screen):
             return 0 #calls the phase function with phase 1 parameters
@@ -46,8 +50,5 @@ def Phase_menu():
         else:
             rect = pygame.Rect(100, 500, 150, 100)
             pygame.draw.rect(variables.screen, (255, 0, 255), rect)
-        
-        if functions.event_handlers():
-            return -2 #quit game
 
         pygame.display.update()

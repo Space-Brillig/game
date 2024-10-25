@@ -35,21 +35,20 @@ def Title_screen():
 
     #setting the background
     bg = pygame.image.load("assets/sprites/background/space.png").convert()
-    bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
     index = 0
 
     while True:
         
         #set fps
         variables.clock.tick(variables.fps)
-        
+        bg = pygame.transform.scale(bg, (variables.screen.get_width(), variables.screen.get_height()))
         functions.draw_bg(bg)
         
         # blackhole animation
         index += 1
         if index == 49:
             index = 0
-        variables.screen.blit(blackhole[index], (variables.SCREEN_WIDTH // 6, 10))
+        variables.screen.blit(blackhole[index], (variables.screen.get_width() // 6, 10))
 
         #actions depending on clicked buttons
         if continue_button.draw(variables.screen):
@@ -62,5 +61,5 @@ def Title_screen():
         #quit game
         if functions.event_handlers():
             return -1
-
+        pygame.display.flip()
         pygame.display.update()

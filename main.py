@@ -36,7 +36,7 @@ def main():
             'E quando o céu não era azul...',
             'Quando os arvoredos não eram verdes...',
             'E quando em todas coisas faltava luz...',
-            'Isto, meu querido...',
+            'Isto, dAmeu querido...',
             'Quando o mundo era Briluz.',
             'Você talvez já tenha ouvido falar...',
             'Ante a infinita multiplicidade do universo disperso em facetas...',

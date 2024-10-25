@@ -25,62 +25,54 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
     pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
 
     #create spaceship (had to put an 'i' not to confuse lol)
-    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100)
+    ispaceship = spaceship.Spaceship(int(variables.screen.get_width() / 2), variables.screen.get_height() - 100)
     variables.spaceship_group.add(ispaceship)
 
     #define background
     bg = pygame.image.load(background).convert()
-    bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
     bg_height = bg.get_height()
     scroll = 0
 
     points_before = variables.points
     caughts = 0
+    delay = 0
 
-    action = 0 #-2 if game's quit, -1 if going back, 0 if game's won, 1 if game's over
+    action = 5 #-2 if game's quit, -1 if going back, 0 if game's won, 1 if game's over
 
     run = True
     while run:
 
         #set fps
         variables.clock.tick(variables.fps)
-
+        bg = pygame.transform.scale(bg, (variables.screen.get_width(), variables.screen.get_height()))
         functions.draw_bg(bg)
         
         #scrolling background
-        for i in range(0, math.ceil(variables.SCREEN_HEIGHT  / bg_height) + 1):
+        for i in range(0, math.ceil(variables.screen.get_height()  / bg_height) + 1):
             variables.screen.blit(bg, (0, - (i * bg_height + scroll)))
         scroll -= 5
         if abs(scroll) > bg_height:
             scroll = 0
 
-        #display bitcoins and number of caught aliens on screen
-        caughts_icon = texts.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
-        points_icon = texts.font.render(f'BITCOINS: {variables.points}', True, 'white')
-        variables.screen.blit(caughts_icon, (variables.SCREEN_WIDTH - caughts_icon.get_width() - 10, 10))
-        variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_icon.get_width() * 0.5, 10))
-
         #come back to phase menu
         if variables.back_button.draw(variables.screen):
             action = -1 #come back
-            run = False
 
         #update spaceship and check if game's over
-        if ispaceship.update(variables.SCREEN_HEIGHT, variables.SCREEN_WIDTH, variables.screen) == False:
+        if ispaceship.update() == False:
             action = 1 #game over
-            run = False
 
         #update space groups
         for clt in variables.clt_group:
-            if clt.update(variables.SCREEN_HEIGHT, ispaceship, variables.clt_speed):
+            if clt.update():
                 variables.points += meteor_points #points by wrecking a meteor
         for alien in variables.alien_group:
-            if alien.update(variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT, c_speed, ispaceship):
-                variables.points += alien_points #points by catching alien
+            if alien.update(c_speed, ispaceship):
+                variables.points += 8 #points by catching alien
                 caughts += 1
 
-        variables.meteor_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
-        variables.r_item_group.update(variables.SCREEN_HEIGHT, ispaceship, c_speed)
+        variables.meteor_group.update(ispaceship, c_speed)
+        variables.r_item_group.update(ispaceship, c_speed)
 
         #draw sprite groups
         variables.spaceship_group.draw(variables.screen)
@@ -95,19 +87,35 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
                 #the phase hasn't being concluded, so the adquired points mustn't be counted
                 variables.points = points_before
                 action = -2 #quit game
-                run = False
             elif event.type == CREATURES_SPAWN_EVENT: #spawn creatures
                 spawn_result = functions.spawn_creatures(props)
-                if spawn_result == 8:
-                    alien_points = spawn_result
-                elif spawn_result:
+                if spawn_result:
                     meteor_points = spawn_result
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    action = -1
 
         #check if the quota is reached
         if caughts == quota:
             action = 0 #game won
-            run = False
 
+        #display bitcoins and number of caught aliens on screen
+        caughts_icon = texts.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
+        caughts_width = caughts_icon.get_width()
+        points_icon = texts.font.render(f'BITCOINS: {variables.points}', True, 'white')
+        points_width = points_icon.get_width()
+        variables.screen.blit(caughts_icon, (variables.screen.get_width() - caughts_width - 10, 10))
+        variables.screen.blit(points_icon, (variables.screen.get_width() // 2 - points_width * 0.5, 10))
+
+        if action != 5:
+            if action == 0 or action == 1:
+                #little delay before changing screen
+                delay += 1
+                if delay == 10:
+                    run = False
+            else:
+                run = False
+        
         pygame.display.update()
     
     #the phase hasn't being concluded, so the adquired points mustn't be counted
@@ -119,16 +127,16 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
     #final phase dialogue
     if action == 0:
         text = [
-            'Muito bem, [player_name].',
-            'Já está bom por agora.',
-            'Vamos voltar para o alojamento...',
-            '          Phase passed'
+            'Muito bom, [player_name]!',
+            'Já deu a nossa cota por hoje.',
+            'Vamos voltar para a estação espacial...',
+            '                             Phase passed'
         ]
     elif action == 1:
         text = [
-            'Augh, vamos recuar, [player_name]!',
+            'Augh... Vamos recuar, [player_name]!',
             'Esta nave precisa de reparos...',
-            '           Phase not passed'
+            '                             Phase not passed'
         ]
     if action == 0 or action == 1:
         functions.darken_screen(song, (0, 0, 0))

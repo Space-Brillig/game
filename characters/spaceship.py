@@ -86,45 +86,45 @@ class Spaceship(pygame.sprite.Sprite):
         self.indexes = [0, 0, 0] #indexes of: engine on, engine off and shield
     
     #set movement on the spaceship
-    def update(self, SURFACE_HEIGHT, SURFACE_WIDTH, SURFACE):
+    def update(self):
         
         speed_now = self.speed #return speed to default
 
         #keep being dragged downwards
-        if self.rect.bottom < SURFACE_HEIGHT - 35:
-            self.rect.y += speed_now // 2
+        if self.rect.bottom < variables.screen.get_height() - 35:
+            self.rect.y += speed_now * (3/4)
 
         #key press and movement
         key = pygame.key.get_pressed()
 
         #engine on animation
-        if key[pygame.K_LSHIFT] and (key[pygame.K_w] or key[pygame.K_UP] or key[pygame.K_a] or key[pygame.K_LEFT] or key[pygame.K_s] or key[pygame.K_DOWN] or key[pygame.K_d] or key[pygame.K_RIGHT]):
+        if key[pygame.K_LSHIFT] and (key[pygame.K_w]  or key[pygame.K_a] or key[pygame.K_s] or key[pygame.K_d]):
             speed_now += speed_now // 2
             self.isonpulse = True
-            SURFACE.blit(self.animations[0][self.indexes[0]], (self.rect.x + self.e_coordon[0], self.rect.y + self.e_coordon[1]))
+            variables.screen.blit(self.animations[0][self.indexes[0]], (self.rect.x + self.e_coordon[0], self.rect.y + self.e_coordon[1]))
             self.indexes[0] += 1
             if self.indexes[0] == len(self.animations[0]) - 1:
                 self.indexes[0] = 0
 
         #shield animation
         if key[pygame.K_f]:
-            SURFACE.blit(self.animations[-2][self.indexes[-1]], (self.rect.x, self.rect.y))
+            variables.screen.blit(self.animations[-2][self.indexes[-1]], (self.rect.x, self.rect.y))
             self.indexes[-1] += 1
             if self.indexes[-1] == len(self.animations[-2]) - 1:
                 self.indexes[-1] = 0
 
-        if (key[pygame.K_w] or key[pygame.K_UP]) and self.rect.top > 10:
-            self.rect.y -= speed_now + speed_now // 2
-        if (key[pygame.K_a] or key[pygame.K_LEFT]) and self.rect.left > 10:
-            self.rect.x -= speed_now
-        if (key[pygame.K_s] or key[pygame.K_DOWN]) and self.rect.bottom < SURFACE_HEIGHT - 35:
+        if key[pygame.K_w] and self.rect.top > 10:
+            self.rect.y -= speed_now + speed_now * (3/4)
+        if key[pygame.K_a] and self.rect.left > 10:
+            self.rect.x -= speed_now 
+        if key[pygame.K_s] and self.rect.bottom < variables.screen.get_height() - 35:
             self.rect.y += speed_now
-        if (key[pygame.K_d] or key[pygame.K_RIGHT]) and self.rect.right < SURFACE_WIDTH - 10:
+        if key[pygame.K_d] and self.rect.right < variables.screen.get_width() - 10:
             self.rect.x += speed_now
 
         #engine off animation (not on boost)
         if not self.isonpulse:
-            SURFACE.blit(self.animations[1][self.indexes[1]], (self.rect.x + self.e_coordff[0], self.rect.y + self.e_coordff[1]))
+            variables.screen.blit(self.animations[1][self.indexes[1]], (self.rect.x + self.e_coordff[0], self.rect.y + self.e_coordff[1]))
             self.indexes[1] += 1
             if self.indexes[1] == len(self.animations[1]) - 1:
                 self.indexes[1] = 1
@@ -134,8 +134,8 @@ class Spaceship(pygame.sprite.Sprite):
         #CLT shooting mechanism
         cooldown = 500 #cooldown variable
         time_now = pygame.time.get_ticks()
-        if key[pygame.K_SPACE] and time_now - self.last_shot > cooldown:
-            clt = projectile.Projectile(self.rect.centerx, self.rect.top, 1, "clt", 0, 0)
+        if (key[pygame.K_SPACE] or pygame.mouse.get_pressed()[0] == 1) and time_now - self.last_shot > cooldown:
+            clt = projectile.CLT(self.rect.centerx, self.rect.top)
             variables.clt_group.add(clt)
             self.last_shot = time_now
 
@@ -143,11 +143,10 @@ class Spaceship(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         
         #draw health bar
-        pygame.draw.rect(SURFACE, red, (self.rect.x, (self.rect.top - 20), self.rect.width, 15))
+        pygame.draw.rect(variables.screen, red, (self.rect.x, (self.rect.top - 20), self.rect.width, 15))
         if self.health_remaining > 0:
-            pygame.draw.rect(SURFACE, green, (self.rect.x, (self.rect.top - 20), int(self.rect.width * (self.health_remaining / self.health_start)), 15))
+            pygame.draw.rect(variables.screen, green, (self.rect.x, (self.rect.top - 20), int(self.rect.width * (self.health_remaining / self.health_start)), 15))
         else:
-            self.kill()
             return False #game over
 
         #damaged spaceship sprites

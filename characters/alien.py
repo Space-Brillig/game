@@ -12,7 +12,7 @@ class Alien(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.caught = False
     
-    def update(self, SURFACE_WIDTH, SURFACE_HEIGHT, speed, spaceship):
+    def update(self, speed, spaceship):
         self.rect.y += speed
         
         #catch by collision
@@ -22,7 +22,7 @@ class Alien(pygame.sprite.Sprite):
 
         #drag offscreen to the closest side if it's caught
         if self.caught:
-            if self.rect.x >= SURFACE_WIDTH // 2:
+            if self.rect.x >= variables.screen.get_width() // 2:
                 self.rect.x += 4
             else:
                 self.rect.x -= 4
@@ -37,8 +37,8 @@ class Alien(pygame.sprite.Sprite):
             
             if spaceship.rect.x >= self.rect.x and self.rect.x > 0:
                 self.rect.x -= spaceship.speed #leftward if collision from left
-            elif spaceship.rect.x < self.rect.x and self.rect.x < SURFACE_WIDTH - self.width:
+            elif spaceship.rect.x < self.rect.x and self.rect.x < variables.screen.get_width() - self.width:
                 self.rect.x += spaceship.speed #rightward if collision from right
 
-        if self.rect.top > SURFACE_HEIGHT or self.rect.left > SURFACE_WIDTH or self.rect.right < 0:
+        if self.rect.top > variables.screen.get_height() or self.rect.left > variables.screen.get_width() or self.rect.right < 0:
             self.kill()
