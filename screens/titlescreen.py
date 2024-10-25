@@ -20,9 +20,9 @@ new_game_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').
 shopping_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
 
 #create title screen buttons' instances
-continue_button = buttons.Button(100, 400, continue_button_img, 0.6)
-new_game_button = buttons.Button(100, 500, new_game_button_img, 0.6)
-shopping_button = buttons.Button(100, 600, shopping_button_img, 0.6)
+continue_button = buttons.Button(continue_button_img, 0.6)
+new_game_button = buttons.Button(new_game_button_img, 0.6)
+shopping_button = buttons.Button(shopping_button_img, 0.6)
 
 #load blackhole' images
 blackhole = []
@@ -41,21 +41,21 @@ def Title_screen():
         
         #set fps
         variables.clock.tick(variables.fps)
-        bg = pygame.transform.scale(bg, (variables.screen.get_width(), variables.screen.get_height()))
+        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
         functions.draw_bg(bg)
         
         # blackhole animation
         index += 1
         if index == 49:
             index = 0
-        variables.screen.blit(blackhole[index], (variables.screen.get_width() // 6, 10))
+        variables.screen.blit(blackhole[index], (variables.SCREEN_WIDTH // 4, -50))
 
         #actions depending on clicked buttons
-        if continue_button.draw(variables.screen):
+        if continue_button.draw(variables.screen, variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 2):
             return 0 #go to phase menu function
-        if new_game_button.draw(variables.screen):
+        if new_game_button.draw(variables.screen, variables.SCREEN_WIDTH // 3, continue_button.rect.y + 120):
             return 1 #new game
-        if shopping_button.draw(variables.screen):
+        if shopping_button.draw(variables.screen, variables.SCREEN_WIDTH // 3, new_game_button.rect.y + 120):
             return 2 #go to the market
         
         #quit game

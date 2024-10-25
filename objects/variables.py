@@ -1,6 +1,7 @@
 import pygame
 import objects.buttons as buttons
 
+pygame.font.init()
 pygame.init()
 
 '''
@@ -22,13 +23,14 @@ pygame.display.set_caption("The Extraordinary Jobs' Galaxy!")
 
 #define global buttons
 menu_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
-back_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
-back_button = buttons.Button(10, 10, back_button_img, 0.6)
+back_button_img = pygame.image.load('assets/sprites/buttons/back_button.jpeg').convert_alpha()
+back_button = buttons.Button(back_button_img, 0.6)
 
 #manage selected sprite
 #manage selected engine: Base Engine, Big Pulse Engine, Burst Engine, Supercharged Engine
 #manage selected shield: Invisibility Shield, Round Shield, Front, Side Shield
-plumes = {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}
+selected = {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}
+bought = {"engine": [True, False, False, False], "shield": [True, False, False, False]}
 
 #game sprite groups
 spaceship_group = pygame.sprite.Group()
@@ -38,7 +40,10 @@ meteor_group = pygame.sprite.Group()
 r_item_group = pygame.sprite.Group()
 
 #default global variables
-points = 0
+points = 10000
 clt_speed = 20
 lifebar = 10
 screens = [True, False, True, True] #initial screen, phase 1, phase 2, phase 3
+
+#set game font text
+font = pygame.font.Font('freesansbold.ttf', 24)

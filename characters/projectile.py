@@ -32,7 +32,7 @@ class Projectile(pygame.sprite.Sprite):
 
     def update(self, ispaceship, speed):
         self.rect.y += speed
-        if self.rect.top > variables.screen.get_height() or self.rect.bottom > variables.screen.get_height():
+        if self.rect.top > variables.SCREEN_HEIGHT or self.rect.bottom > variables.SCREEN_HEIGHT:
             self.kill()
         
         if not self.collided and self.isharmful:

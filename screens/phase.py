@@ -25,7 +25,7 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
     pygame.time.set_timer(CREATURES_SPAWN_EVENT, spawn_event)  # Spawn every 'spawn_event' milliseconds
 
     #create spaceship (had to put an 'i' not to confuse lol)
-    ispaceship = spaceship.Spaceship(int(variables.screen.get_width() / 2), variables.screen.get_height() - 100)
+    ispaceship = spaceship.Spaceship(int(variables.SCREEN_WIDTH / 2), variables.SCREEN_HEIGHT - 100)
     variables.spaceship_group.add(ispaceship)
 
     #define background
@@ -44,18 +44,18 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
 
         #set fps
         variables.clock.tick(variables.fps)
-        bg = pygame.transform.scale(bg, (variables.screen.get_width(), variables.screen.get_height()))
         functions.draw_bg(bg)
+        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
         
         #scrolling background
-        for i in range(0, math.ceil(variables.screen.get_height()  / bg_height) + 1):
+        for i in range(0, math.ceil(variables.SCREEN_HEIGHT  / bg_height) + 1):
             variables.screen.blit(bg, (0, - (i * bg_height + scroll)))
         scroll -= 5
         if abs(scroll) > bg_height:
             scroll = 0
 
         #come back to phase menu
-        if variables.back_button.draw(variables.screen):
+        if variables.back_button.draw(variables.screen, 10, 10):
             action = -1 #come back
 
         #update spaceship and check if game's over
@@ -94,18 +94,22 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     action = -1
+            elif event.type == pygame.VIDEORESIZE:
+                variables.SCREEN_WIDTH = event.w
+                variables.SCREEN_HEIGHT = event.h
+                variables.screen = pygame.display.set_mode((variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
         #check if the quota is reached
         if caughts == quota:
             action = 0 #game won
 
         #display bitcoins and number of caught aliens on screen
-        caughts_icon = texts.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
+        caughts_icon = variables.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
         caughts_width = caughts_icon.get_width()
-        points_icon = texts.font.render(f'BITCOINS: {variables.points}', True, 'white')
+        points_icon = variables.font.render(f'BITCOINS: {variables.points}', True, 'white')
         points_width = points_icon.get_width()
-        variables.screen.blit(caughts_icon, (variables.screen.get_width() - caughts_width - 10, 10))
-        variables.screen.blit(points_icon, (variables.screen.get_width() // 2 - points_width * 0.5, 10))
+        variables.screen.blit(caughts_icon, (variables.SCREEN_WIDTH - caughts_width - 10, 10))
+        variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_width * 0.5, 10))
 
         if action != 5:
             if action == 0 or action == 1:

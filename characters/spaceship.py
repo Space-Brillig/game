@@ -15,28 +15,28 @@ class Spaceship(pygame.sprite.Sprite):
         self.last_shot = pygame.time.get_ticks()
         
         #set correct lengths depending on the selected engine
-        if variables.plumes["engine"].index(True) == 0:
+        if variables.selected["engine"].index(True) == 0:
             sprite_now = "BaseEngine"
             self.speed = 5
             length_on = 4
             length_off = 3
             self.e_coordon = (0, 8)
             self.e_coordff = self.e_coordon
-        elif variables.plumes["engine"].index(True) == 1:
+        elif variables.selected["engine"].index(True) == 1:
             sprite_now = "BigPulseEngine"
             self.speed = 6
             length_on = 4
             length_off = 4
             self.e_coordon = (32, 76)
             self.e_coordff = (-1, 10)
-        elif variables.plumes["engine"].index(True) == 2:
+        elif variables.selected["engine"].index(True) == 2:
             sprite_now = "BurstEngine"
             self.speed = 7
             length_on = 6
             length_off = 7
             self.e_coordon = (39, 78)
             self.e_coordff = self.e_coordon
-        elif variables.plumes["engine"].index(True) == 3:
+        elif variables.selected["engine"].index(True) == 3:
             sprite_now = "SuperchargedEngine"
             self.speed = 8
             length_on = 4
@@ -55,16 +55,16 @@ class Spaceship(pygame.sprite.Sprite):
             self.animations[1][i] = pygame.transform.scale(self.animations[1][i], (self.animations[1][i].get_width() * 2, self.animations[1][i].get_height() * 2))
         
         #set correct lenghts depending on selected shield
-        if variables.plumes["shield"].index(True) == 0:
+        if variables.selected["shield"].index(True) == 0:
             sprite_now = "FrontShield"
             length_on = 6
-        elif variables.plumes["shield"].index(True) == 1:
+        elif variables.selected["shield"].index(True) == 1:
             sprite_now = "Front&SideShield"
             length_on = 6
-        elif variables.plumes["shield"].index(True) == 2:
+        elif variables.selected["shield"].index(True) == 2:
             sprite_now = "RoundShield"
             length_on = 6
-        elif variables.plumes["shield"].index(True) == 3:
+        elif variables.selected["shield"].index(True) == 3:
             sprite_now = "InvisibilityShield"
             length_on = 6
 
@@ -74,7 +74,7 @@ class Spaceship(pygame.sprite.Sprite):
             self.animations[-2][i] = pygame.transform.scale(self.animations[-2][i], (self.animations[-2][i].get_width() * 2, self.animations[-2][i].get_height() * 2))
 
         #load spaceship damaged sprites
-        if variables.plumes["sprite"]:
+        if variables.selected["sprite"]:
             for i in range (4):
                 self.animations[-1].append(pygame.image.load(f'assets/sprites/spaceship/samples/main/spaceship-{i}.png'))
                 self.animations[-1][i] = pygame.transform.scale(self.animations[-1][i], (self.animations[-1][i].get_width() * 2, self.animations[-1][i].get_height() * 2))
@@ -91,7 +91,7 @@ class Spaceship(pygame.sprite.Sprite):
         speed_now = self.speed #return speed to default
 
         #keep being dragged downwards
-        if self.rect.bottom < variables.screen.get_height() - 35:
+        if self.rect.bottom < variables.SCREEN_HEIGHT - 35:
             self.rect.y += speed_now * (3/4)
 
         #key press and movement
@@ -117,9 +117,9 @@ class Spaceship(pygame.sprite.Sprite):
             self.rect.y -= speed_now + speed_now * (3/4)
         if key[pygame.K_a] and self.rect.left > 10:
             self.rect.x -= speed_now 
-        if key[pygame.K_s] and self.rect.bottom < variables.screen.get_height() - 35:
+        if key[pygame.K_s] and self.rect.bottom < variables.SCREEN_HEIGHT - 35:
             self.rect.y += speed_now
-        if key[pygame.K_d] and self.rect.right < variables.screen.get_width() - 10:
+        if key[pygame.K_d] and self.rect.right < variables.SCREEN_WIDTH - 10:
             self.rect.x += speed_now
 
         #engine off animation (not on boost)

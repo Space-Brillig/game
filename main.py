@@ -1,6 +1,7 @@
 import pygame
 import screens.texts as texts
 import screens.titlescreen as titlescreen
+import screens.market as market
 import screens.phasemenu as phasemenu
 import screens.phase as phase
 import objects.variables as variables
@@ -117,7 +118,9 @@ def main():
 
         #go to the market
         elif title_screen_result == 2:
-            print ('market')
+            market_result = market.Market()
+            if market_result:
+                return True
 
 if main():
     pygame.quit()

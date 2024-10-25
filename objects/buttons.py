@@ -2,13 +2,12 @@ import pygame
 
 #Button class
 class Button():
-    def __init__(self, x, y, image, scale):
+    def __init__(self, image, scale):
         self.image = pygame.transform.scale(image, (int(image.get_width() * scale), int(image.get_height() * scale)))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
         self.clicked = False
     
-    def draw(self, surface):
+    def draw(self, surface, x, y):
         action = False
         #get mouse position
         pos = pygame.mouse.get_pos()
@@ -24,6 +23,7 @@ class Button():
             self.clicked = False
 
         #draw button on screen
+        self.rect.topleft = (x, y)
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
         return action

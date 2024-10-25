@@ -22,7 +22,7 @@ class Alien(pygame.sprite.Sprite):
 
         #drag offscreen to the closest side if it's caught
         if self.caught:
-            if self.rect.x >= variables.screen.get_width() // 2:
+            if self.rect.x >= variables.SCREEN_WIDTH // 2:
                 self.rect.x += 4
             else:
                 self.rect.x -= 4
@@ -37,8 +37,8 @@ class Alien(pygame.sprite.Sprite):
             
             if spaceship.rect.x >= self.rect.x and self.rect.x > 0:
                 self.rect.x -= spaceship.speed #leftward if collision from left
-            elif spaceship.rect.x < self.rect.x and self.rect.x < variables.screen.get_width() - self.width:
+            elif spaceship.rect.x < self.rect.x and self.rect.x < variables.SCREEN_WIDTH - self.width:
                 self.rect.x += spaceship.speed #rightward if collision from right
 
-        if self.rect.top > variables.screen.get_height() or self.rect.left > variables.screen.get_width() or self.rect.right < 0:
+        if self.rect.top > variables.SCREEN_HEIGHT or self.rect.left > variables.SCREEN_WIDTH or self.rect.right < 0:
             self.kill()
