@@ -13,8 +13,9 @@ SuperchargedEngine = pygame.image.load('assets/sprites/spaceship/engines/Superch
 shield_img = pygame.image.load('assets/sprites/spaceship/shields/RoundShield/shield-12.png')
 FrontShield = pygame.image.load('assets/sprites/spaceship/shields/FrontShield/shield-10.png')
 FrontSideShield = pygame.image.load('assets/sprites/spaceship/shields/Front&SideShield/shield-1.png')
-InvisibilityShield = pygame.image.load('assets/sprites/spaceship/shields/InvisibilityShield/shield-12.png')
+InvisibilityShield = pygame.image.load('assets/sprites/spaceship/shields/InvisibilityShield/shield-10.png')
 
+#load buttons' images
 buy_img = pygame.image.load('assets/sprites/buttons/buy.jpeg').convert_alpha()
 select_img = pygame.image.load('assets/sprites/buttons/select.jpeg').convert_alpha()
 selected_icon = pygame.image.load('assets/sprites/buttons/selected.jpeg').convert_alpha()
@@ -23,18 +24,16 @@ selected_icon = pygame.transform.scale(selected_icon, (selected_icon.get_width()
 #create icons buttons
 engine_icon = buttons.Button(engine_img, 2)
 shield_icon = buttons.Button(shield_img, 2)
-buy1_button = buttons.Button(buy_img, 0.2)
-buy2_button = buttons.Button(buy_img, 0.2)
-buy3_button = buttons.Button(buy_img, 0.2)
-buy4_button = buttons.Button(buy_img, 0.2)
-select1_button = buttons.Button(select_img, 0.2)
-select2_button = buttons.Button(select_img, 0.2)
-select3_button = buttons.Button(select_img, 0.2)
-select4_button = buttons.Button(select_img, 0.2)
+buy_button = []
+select_button = []
+for i in range (4):
+    buy_button.append(buttons.Button(buy_img, 0.2))
+    select_button.append(buttons.Button(select_img, 0.2))
 
 rect = pygame.Rect(200, 500, 200, 300)
 
 def Market():
+    upgrade_result = None
     while True:
 
         #set fps
@@ -43,61 +42,25 @@ def Market():
         #set background
         variables.screen.fill((255, 255, 255))
 
-        #display bitcoins
-        points_icon = variables.font.render(f'BITCOINS: {variables.points}', True, 'black')
-        points_width = points_icon.get_width()
-        variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_width * 0.5, 10))
+        functions.display_bitcoins('black')
 
         #go back
         if variables.back_button.draw(variables.screen, 10, 10):
             return False
 
         #buy or select engine
-        if engine_icon.draw(variables.screen, 20, variables.SCREEN_HEIGHT // 2):
+        if engine_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (1/3)):
+            upgrade_result = upgrade("engine", [80, 140, 200, 300], engine_img, BigPulseEngine, BurstEngine, SuperchargedEngine)
+
+        #buy or select shield
+        if shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (2/3)):
+            upgrade_result = upgrade("shield", [150, 270, 390, 500], FrontShield, FrontSideShield, shield_img, InvisibilityShield)
+
+        if upgrade_result == False:
+            return False #go back
+        elif upgrade_result == True:
+            return True #quit game
             
-            while True:
-
-                #set fps
-                variables.clock.tick(variables.fps)
-
-                #set background
-                variables.screen.fill((255, 255, 255))
-
-                #display bitcoins
-                points_icon = variables.font.render(f'BITCOINS: {variables.points}', True, 'black')
-                points_width = points_icon.get_width()
-                variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_width * 0.5, 10))
-
-                #diselect
-                if engine_icon.draw(variables.screen, 20, variables.SCREEN_HEIGHT // 2):
-                    break
-
-                #go back
-                if variables.back_button.draw(variables.screen, 10, 10):
-                    return False
-                
-                #Base Engine
-                variables.screen.blit(engine_img, (100, 500))
-                buy_select(buy1_button, select1_button, "engine", 0, 50, 100, 600)
-                
-                #Big Pulse Engine
-                variables.screen.blit(BigPulseEngine, (400, 500))
-                buy_select(buy2_button, select2_button, "engine", 1, 80, 400, 600)
-                
-                #Burst Engine
-                variables.screen.blit(BurstEngine, (700, 500))
-                buy_select(buy3_button, select3_button, "engine", 2, 110, 700, 600)
-                
-                #Supercharged Engine
-                variables.screen.blit(SuperchargedEngine, (1000, 500))
-                buy_select(buy4_button, select4_button, "engine", 3, 140, 1000, 600)
-
-                #quit game
-                if functions.event_handlers():
-                    return True
-
-                pygame.display.update()
-
         #quit game
         if functions.event_handlers():
             return True
@@ -129,3 +92,44 @@ def buy_select(buy_button, select_button, product, product_index, necessary, x, 
     else:
         variables.screen.blit(selected_icon, (x, y))
 
+def upgrade(product, necessary, icon1, icon2, icon3, icon4):
+    while True:
+
+        #set fps
+        variables.clock.tick(variables.fps)
+
+        #set background
+        variables.screen.fill((255, 255, 255))
+
+        #display bitcoins
+        functions.display_bitcoins('black')
+
+        #diselect
+        if engine_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (1/3)) or shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (2/3)):
+            break
+
+        #go back
+        if variables.back_button.draw(variables.screen, 10, 10):
+            return False
+        
+        #1st upgrade
+        variables.screen.blit(icon1, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (3/7)))
+        buy_select(buy_button[0], select_button[0], product, 0, necessary[0], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (3/7) + 100)
+        
+        #2nd upgrade
+        variables.screen.blit(icon2, (variables.SCREEN_WIDTH // 2, variables.SCREEN_HEIGHT * (3/7)))
+        buy_select(buy_button[1], select_button[1], product, 1, necessary[1], variables.SCREEN_WIDTH // 2, variables.SCREEN_HEIGHT * (3/7) + 100)
+        
+        #3rd upgrade
+        variables.screen.blit(icon3, (variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT * (3/7)))
+        buy_select(buy_button[2], select_button[2], product, 2, necessary[2], variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT * (3/7) + 100)
+        
+        #4th upgrade
+        variables.screen.blit(icon4, (variables.SCREEN_WIDTH * (5/6), variables.SCREEN_HEIGHT * (3/7)))
+        buy_select(buy_button[3], select_button[3], product, 3, necessary[3], variables.SCREEN_WIDTH * (5/6), variables.SCREEN_HEIGHT * (3/7) + 100)
+
+        #quit game
+        if functions.event_handlers():
+            return True
+
+        pygame.display.update()

@@ -106,10 +106,8 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
         #display bitcoins and number of caught aliens on screen
         caughts_icon = variables.font.render(f'RECRUTADOS: {caughts}/{quota}', True, 'white')
         caughts_width = caughts_icon.get_width()
-        points_icon = variables.font.render(f'BITCOINS: {variables.points}', True, 'white')
-        points_width = points_icon.get_width()
-        variables.screen.blit(caughts_icon, (variables.SCREEN_WIDTH - caughts_width - 10, 10))
-        variables.screen.blit(points_icon, (variables.SCREEN_WIDTH // 2 - points_width * 0.5, 10))
+        variables.screen.blit(caughts_icon, (variables.SCREEN_WIDTH // 2 - caughts_width * 0.5, 10))
+        functions.display_bitcoins('white')
 
         if action != 5:
             if action == 0 or action == 1:

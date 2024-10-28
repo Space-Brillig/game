@@ -5,7 +5,7 @@ import objects.variables as variables
 class Alien(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("assets/sprites/alien/shrek.jpeg")
+        self.image = pygame.image.load("assets/sprites/alien/shrek.jpeg").convert_alpha()
         self.width = self.image.get_width()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -29,16 +29,17 @@ class Alien(pygame.sprite.Sprite):
             self.rect.y += 4
 
         #drag by collision with the spaceship
-        if pygame.sprite.spritecollide(self, variables.spaceship_group, None, pygame.sprite.collide_mask):
-            if spaceship.rect.y >= self.rect.y:
-                self.rect.y -= spaceship.speed #upwards if collision from bottom
-            else:
-                self.rect.y += spaceship.speed #downwards if collision from top 
-            
-            if spaceship.rect.x >= self.rect.x and self.rect.x > 0:
-                self.rect.x -= spaceship.speed #leftward if collision from left
-            elif spaceship.rect.x < self.rect.x and self.rect.x < variables.SCREEN_WIDTH - self.width:
-                self.rect.x += spaceship.speed #rightward if collision from right
+        if not spaceship.invisibility:
+            if pygame.sprite.spritecollide(self, variables.spaceship_group, None, pygame.sprite.collide_mask):
+                if spaceship.rect.y >= self.rect.y:
+                    self.rect.y -= spaceship.speed #upwards if collision from bottom
+                else:
+                    self.rect.y += spaceship.speed #downwards if collision from top 
+                
+                if spaceship.rect.x >= self.rect.x and self.rect.x > 0:
+                    self.rect.x -= spaceship.speed #leftward if collision from left
+                elif spaceship.rect.x < self.rect.x and self.rect.x < variables.SCREEN_WIDTH - self.width:
+                    self.rect.x += spaceship.speed #rightward if collision from right
 
         if self.rect.top > variables.SCREEN_HEIGHT or self.rect.left > variables.SCREEN_WIDTH or self.rect.right < 0:
             self.kill()

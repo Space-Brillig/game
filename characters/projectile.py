@@ -10,15 +10,15 @@ class Projectile(pygame.sprite.Sprite):
         if isharmful:
             self.animations = [[], []]
             for i in range (7):
-                self.animations[0].append(pygame.image.load(f'assets/sprites/projectile/meteor/destroyed/detroyed{i + 1}.png'))
+                self.animations[0].append(pygame.image.load(f'assets/sprites/projectile/meteor/destroyed/detroyed{i + 1}.png').convert_alpha())
                 self.animations[0][i] = pygame.transform.scale(self.animations[0][i], (self.animations[0][i].get_width() * scale, self.animations[0][i].get_height() * scale))
             for i in range (3):
-                self.animations[1].append(pygame.image.load(f'assets/sprites/projectile/meteor/tail/tail{i + 1}.png'))
+                self.animations[1].append(pygame.image.load(f'assets/sprites/projectile/meteor/tail/tail{i + 1}.png').convert_alpha())
                 self.animations[1][i] = pygame.transform.scale(self.animations[1][i], (self.animations[1][i].get_width() * scale + 20, self.animations[1][i].get_height() * 2*scale))
             self.image = self.animations[0][1]
             self.height = self.image.get_height() // 2
         else:
-            self.image = pygame.image.load(f'assets/sprites/projectile/r_item.png')
+            self.image = pygame.image.load(f'assets/sprites/projectile/r_item.png').convert_alpha()
         self.damage = damage
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -49,19 +49,28 @@ class Projectile(pygame.sprite.Sprite):
         
         if pygame.sprite.spritecollide(self, variables.clt_group, True, pygame.sprite.collide_mask):
             self.collided = True
-        if pygame.sprite.spritecollide(self, variables.spaceship_group, False, pygame.sprite.collide_mask):
-            #it's meteor
-            if self.isharmful:
-                collision_now = pygame.time.get_ticks()
-                if collision_now - self.last_collision > 500:
-                    self.collided = True
-                    ispaceship.health_remaining -= self.damage
-                self.last_collision = collision_now
-            #it's regenerative item
-            else:
-                if ispaceship.health_remaining < ispaceship.health_start:
-                    ispaceship.health_remaining += 1
-                self.kill()
+        if not ispaceship.invisibility:
+            if pygame.sprite.spritecollide(self, variables.spaceship_group, False, pygame.sprite.collide_mask):
+                #it's meteor
+                if self.isharmful:
+                    collision_now = pygame.time.get_ticks()
+                    if collision_now - self.last_collision > 500:
+                        self.collided = True
+                        if ispaceship.shield_on:
+                            if variables.selected['shield'].index(True) == 0:
+                                if self.rect.y >= ispaceship.rect.top and abs(self.rect.x - ispaceship.rect.x) >= 5:
+                                    ispaceship.health_remaining -= self.damage
+                            elif variables.selected['shield'].index(True) == 1:
+                                if self.rect.bottom > ispaceship.rect.bottom:
+                                    ispaceship.health_remaining -= self.damage
+                        else:
+                            ispaceship.health_remaining -= self.damage
+                    self.last_collision = collision_now
+                #it's regenerative item
+                else:
+                    if ispaceship.health_remaining < ispaceship.health_start:
+                        ispaceship.health_remaining += 1
+                    self.kill()
 
 class CLT(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -69,7 +78,7 @@ class CLT(pygame.sprite.Sprite):
         #load clt sprites
         self.animation = []
         for i in range (7):
-            self.animation.append(pygame.image.load(f'assets/sprites/projectile/clt/clt-{i + 1}.png'))
+            self.animation.append(pygame.image.load(f'assets/sprites/projectile/clt/clt-{i + 1}.png').convert_alpha())
         self.image = self.animation[0]
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)

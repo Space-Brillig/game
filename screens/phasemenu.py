@@ -17,6 +17,7 @@ phase_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_al
 phase1_button = buttons.Button(phase_img, 0.5)
 phase2_button = buttons.Button(phase_img, 0.5)
 phase3_button = buttons.Button(phase_img, 0.5)
+phase4_button = buttons.Button(phase_img, 0.5)
 
 #Phase Menu function
 def Phase_menu():
@@ -28,6 +29,8 @@ def Phase_menu():
         
         variables.screen.fill((100, 100, 240))
 
+        functions.display_bitcoins('white')
+
         event = functions.event_handlers()
         if event == True:
             return -2 #quit game
@@ -35,20 +38,29 @@ def Phase_menu():
         #actions depending on clicked buttons
         if variables.back_button.draw(variables.screen, 10, 10) or event == False:
             return -1 # go back
-        if phase1_button.draw(variables.screen, variables.SCREEN_WIDTH // 2 - 100, 300):
+        
+        if phase1_button.draw(variables.screen, variables.SCREEN_WIDTH // 6, variables.SCREEN_HEIGHT // 6):
             return 0 #calls the phase function with phase 1 parameters
+        
         if variables.screens[1]:
-            if phase2_button.draw(variables.screen, variables.SCREEN_WIDTH // 2 - 100, 400):
+            if phase2_button.draw(variables.screen, variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT // 6):
                 return 1 #calls the phase function with phase 2 parameters if phase 1 was passed
         else:
-            rect = pygame.Rect(variables.SCREEN_WIDTH // 2 - 100, 400, 150, 100)
+            rect = pygame.Rect(variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT // 6, 150, 100)
             pygame.draw.rect(variables.screen, (255, 0, 255), rect)
         
         if variables.screens[2]:
-            if phase3_button.draw(variables.screen, variables.SCREEN_WIDTH // 2 - 100, 500):
+            if phase3_button.draw(variables.screen, variables.SCREEN_WIDTH // 6, variables.SCREEN_HEIGHT * (2/3)):
                 return 2 #calls the phase function with phase 3 parameters if phase 2 was passed
         else:
-            rect = pygame.Rect(variables.SCREEN_WIDTH // 2 - 100, 500, 150, 100)
+            rect = pygame.Rect(variables.SCREEN_WIDTH // 6, variables.SCREEN_HEIGHT * (2/3), 150, 100)
+            pygame.draw.rect(variables.screen, (255, 0, 255), rect)
+
+        if variables.screens[3]:
+            if phase4_button.draw(variables.screen, variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT * (2/3)):
+                return 3 #calls the phase function with phase 4 parameters if phase 2 was passed
+        else:
+            rect = pygame.Rect(variables.SCREEN_WIDTH * (2/3), variables.SCREEN_HEIGHT * (2/3), 150, 100)
             pygame.draw.rect(variables.screen, (255, 0, 255), rect)
 
         pygame.display.update()

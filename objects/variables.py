@@ -43,7 +43,7 @@ r_item_group = pygame.sprite.Group()
 points = 10000
 clt_speed = 20
 lifebar = 10
-screens = [True, False, True, True] #initial screen, phase 1, phase 2, phase 3
+screens = [True, True, True, True, True] #initial screen, phase 1, phase 2, phase 3, phase 4
 
 #set game font text
 font = pygame.font.Font('freesansbold.ttf', 24)
