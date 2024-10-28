@@ -102,7 +102,7 @@ def main():
                 #go to phase 3
                 elif phase_menu_result == 2:
                     winterwind.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/bg.png", 10, [7, 20, 25], 30, 500, winterwind) #phase 3 parameters
+                    phase_result = phase.Phase("chaotic", 10, [7, 20, 25], 30, 500, winterwind) #phase 3 parameters
                     phase_passed = 3
 
                 #go to phase 4

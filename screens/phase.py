@@ -1,6 +1,9 @@
 import pygame
-import math
+from math import ceil
 import characters.spaceship as spaceship
+import characters.alien as alien
+import characters.projectile as projectile
+from random import randint
 import objects.functions as functions
 import objects.variables as variables
 import screens.texts as texts
@@ -29,8 +32,18 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
     variables.spaceship_group.add(ispaceship)
 
     #define background
-    bg = pygame.image.load(background).convert()
+    if background != 'chaotic':
+        bg = pygame.image.load(background).convert_alpha()
+    else:
+        chaotic_animation = []
+        for i in range(12):
+            chaotic_animation.append(pygame.image.load(f'assets/sprites/background/chaotic/SP{i + 1}.png').convert_alpha())
+            bg = chaotic_animation[0]
+        index = 0
+        iterate = 1
+        animation_cooldown = pygame.time.get_ticks()
     bg_height = bg.get_height()
+    bg_width = bg.get_width()
     scroll = 0
 
     points_before = variables.points
@@ -44,12 +57,27 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
 
         #set fps
         variables.clock.tick(variables.fps)
-        functions.draw_bg(bg)
-        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
+        if background == 'chaotic':
+            time_now = pygame.time.get_ticks()
+            if time_now - animation_cooldown > 200:
+                index += iterate
+                animation_cooldown = time_now
+                bg = chaotic_animation[index]
+                if index == 11:
+                    iterate = -1
+                if index == 0:
+                    iterate = 1
+        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, (variables.SCREEN_WIDTH * bg_height) // bg_width))
+        bg_height = bg.get_height()
+        bg_width = bg.get_width()
         
         #scrolling background
-        for i in range(0, math.ceil(variables.SCREEN_HEIGHT  / bg_height) + 1):
-            variables.screen.blit(bg, (0, - (i * bg_height + scroll)))
+        if variables.SCREEN_HEIGHT >= bg_height:
+            for i in range(0, ceil(variables.SCREEN_HEIGHT // bg_height) + 1):
+                variables.screen.blit(bg, (0, - (i * bg_height + scroll)))
+        else:
+            for i in range(0, ceil(bg_height // variables.SCREEN_HEIGHT) + 1):
+                variables.screen.blit(bg, (0, - (i * bg_height + scroll)))
         scroll -= 5
         if abs(scroll) > bg_height:
             scroll = 0
@@ -88,7 +116,7 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
                 variables.points = points_before
                 action = -2 #quit game
             elif event.type == CREATURES_SPAWN_EVENT: #spawn creatures
-                spawn_result = functions.spawn_creatures(props)
+                spawn_result = spawn_creatures(props)
                 if spawn_result:
                     meteor_points = spawn_result
             elif event.type == pygame.KEYDOWN:
@@ -97,6 +125,10 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
             elif event.type == pygame.VIDEORESIZE:
                 variables.SCREEN_WIDTH = event.w
                 variables.SCREEN_HEIGHT = event.h
+                if variables.SCREEN_HEIGHT < 700:
+                    variables.SCREEN_HEIGHT = 700
+                if variables.SCREEN_WIDTH < 700:
+                    variables.SCREEN_WIDTH = 700
                 variables.screen = pygame.display.set_mode((variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
         #check if the quota is reached
@@ -126,7 +158,7 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
         song.stop()
         variables.points = points_before
     
-    #final phase dialogue
+    #phase final dialogue
     if action == 0:
         text = [
             'Muito bom, [player_name]!',
@@ -145,6 +177,52 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
         if not texts.dialogue(text, False, False, True, "white",False):
             action = -2
 
-    functions.clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
+    clear_sprites([variables.spaceship_group, variables.clt_group, variables.alien_group, variables.r_item_group, variables.meteor_group], bg)
 
     return action
+
+#creature spawning function
+def spawn_creatures(props): #spawning based on proportions, respectively: alien, meteor and regenerative item
+
+    random = randint(1, props[-1]) #generate a number between 1 and the greatest proportion
+
+    if random <= props[0]: 
+
+        #spawn alien
+        Alien = alien.Alien(randint(variables.SCREEN_WIDTH // 6, int(variables.SCREEN_WIDTH * (5/6))), randint(-100, -50))
+        variables.alien_group.add(Alien)
+        return False
+    
+    elif random <= props[1] and random > props[0]: 
+
+        #spawn meteor
+        size = randint(1, 3) #generating random size
+        if size == 1:
+            #small meteor
+            meteor = projectile.Projectile(randint(10, variables.SCREEN_WIDTH - 10), randint(-100, -50), 2, True, 1)
+            meteor_points = 1
+        elif size == 2:
+            #medium meteor
+            meteor = projectile.Projectile(randint(variables.SCREEN_WIDTH // 6, int(variables.SCREEN_WIDTH * (5/6))), randint(-100, -50), 3, True, 1.5)
+            meteor_points = 2
+        else:
+            #big meteor
+            meteor = projectile.Projectile(randint(variables.SCREEN_WIDTH // 4, int(variables.SCREEN_WIDTH * (3/4))), randint(-100, -50), 4, True, 2)
+            meteor_points = 3
+        variables.meteor_group.add(meteor)
+        
+        return meteor_points
+    
+    elif random > props[0] and random > props[1]:
+
+        #spawn regenerative item
+        r_item = projectile.Projectile(randint(variables.SCREEN_WIDTH // 4, int(variables.SCREEN_WIDTH * (3/4))), randint(-100, -50), 0.7, False, 0)
+        variables.r_item_group.add(r_item)
+        return False
+    
+#clear sprites off screen at function return
+def clear_sprites(sprites_groups, bg):
+    for variables.sprite_group in sprites_groups:
+        for sprite in variables.sprite_group:
+            sprite.kill()
+            variables.sprite_group.clear(variables.screen, bg)
