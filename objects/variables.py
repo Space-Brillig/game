@@ -47,3 +47,4 @@ screens = [True, True, True, True, True] #initial screen, phase 1, phase 2, phas
 
 #set game font text
 font = pygame.font.Font('freesansbold.ttf', 24)
+mfont = pygame.font.Font('freesansbold.ttf', 14)
