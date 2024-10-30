@@ -6,6 +6,7 @@ class Alien(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("assets/sprites/alien/ET.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.image.get_width() * 0.3, self.image.get_height() * 0.3))
         self.width = self.image.get_width()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
