@@ -1,5 +1,6 @@
 import pygame
 import objects.buttons as buttons
+from objects.SaveLoad import SaveLoadSystem as SaveLoad
 
 pygame.font.init()
 pygame.init()
@@ -22,15 +23,20 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE
 pygame.display.set_caption("The Extraordinary Jobs' Galaxy!")
 
 #define global buttons
-menu_button_img = pygame.image.load('assets/sprites/buttons/continue.jpeg').convert_alpha()
-back_button_img = pygame.image.load('assets/sprites/buttons/back_button.jpeg').convert_alpha()
+back_button_img = pygame.image.load('assets/sprites/buttons/return.png').convert_alpha()
 back_button = buttons.Button(back_button_img, 0.6)
+bitcoin_img = pygame.image.load('assets/sprites/buttons/bitcoin.png')
+bitcoin_img = pygame.transform.scale(bitcoin_img, (bitcoin_img.get_width() * 0.15, bitcoin_img.get_height() * 0.15))
+
+#default global variables
 
 #manage selected sprite
 #manage selected engine: Base Engine, Big Pulse Engine, Burst Engine, Supercharged Engine
 #manage selected shield: Invisibility Shield, Round Shield, Front, Side Shield
-selected = {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}
-bought = {"engine": [True, False, False, False], "shield": [True, False, False, False]}
+
+saveload = SaveLoad('.save', 'objects/save_data')
+
+points, clt_speed, lifebar, screens, selected, bought, player_name = saveload.load_game_data(["points", "clt_speed", "lifebar", "screens", "selected", "bought", "player_name"], [100, 10, 10, [False, False, False, False, False], {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}, {"engine": [True, False, False, False], "shield": [True, False, False, False]}, ''])
 
 #game sprite groups
 spaceship_group = pygame.sprite.Group()
@@ -39,12 +45,8 @@ clt_group = pygame.sprite.Group()
 meteor_group = pygame.sprite.Group()
 r_item_group = pygame.sprite.Group()
 
-#default global variables
-points = 10000
-clt_speed = 20
-lifebar = 10
-screens = [True, True, True, True, True] #initial screen, phase 1, phase 2, phase 3, phase 4
-
 #set game font text
 font = pygame.font.Font('freesansbold.ttf', 24)
 mfont = pygame.font.Font('freesansbold.ttf', 14)
+tfont = pygame.font.Font('freesansbold.ttf', 64)
+pmfont = pygame.font.Font('freesansbold.ttf', 30)

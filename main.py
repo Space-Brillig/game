@@ -26,20 +26,20 @@ preludium = pygame.mixer.Sound('assets/music/PreludiuminCmajor-Bach&TatianaNikol
 
 #Main game logic
 def main():
-
     #first interaction
     if not variables.screens[0]:
         text = [
             'Hum... o que fazes aí? Erm...',
             'Qual é o seu nome?',
-            'Ah... sim... deixe-me te contar uma história, [player_name]...',
+            '',
+            f'Ah... sim... deixe-me te contar uma história, {variables.player_name}...',
             'Tudo começou há cerca de 10000 atrás...',
             'Numa época em que as bússolas apontavam para o sul...',
             'Quando a água não satisfazia a sede...',
             'E quando o céu não era azul...',
             'Quando os arvoredos não eram verdes...',
             'E quando em todas coisas faltava luz...',
-            'Isto, dAmeu querido...',
+            'Isto, meu querido...',
             'Quando o mundo era Briluz.',
             'Você talvez já tenha ouvido falar...',
             'Ante a infinita multiplicidade do universo disperso em facetas...',
@@ -90,7 +90,7 @@ def main():
                 #go to phase 1
                 if phase_menu_result == 0:
                     nocturne.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/bg.png", 5, [10, 15, 17], 10, 1500, nocturne) #phase 1 parameters
+                    phase_result = phase.Phase("assets/sprites/background/antdream.png", 5, [10, 15, 17], 10, 1500, nocturne) #phase 1 parameters
                     phase_passed = 1
                 
                 #go to phase 2
@@ -102,14 +102,45 @@ def main():
                 #go to phase 3
                 elif phase_menu_result == 2:
                     winterwind.play(-1)
-                    phase_result = phase.Phase("chaotic", 10, [7, 20, 25], 30, 500, winterwind) #phase 3 parameters
+                    phase_result = phase.Phase("chaotic", 10, [7, 20, 25], 25, 500, winterwind) #phase 3 parameters
                     phase_passed = 3
 
                 #go to phase 4
                 elif phase_menu_result == 3:
                     sonata_3rdmovement.play(-1)
-                    phase_result = phase.Phase("assets/sprites/background/bg.png", 15, [5, 20, 27], 45, 200, sonata_3rdmovement) #phase 3 parameters
+                    phase_result = phase.Phase("assets/sprites/background/hampered'stomb.png", 15, [5, 20, 27], 30, 200, sonata_3rdmovement) #phase 4 parameters
                     phase_passed = 4
+
+                elif phase_menu_result == 4:
+                    text = [
+                        'Hmmmmm... cá estamos de volta...',
+                        'Que bom que ainda não dormistes enquanto estava a contar a história',
+                        'Foi quando aquele moço com seu nome veio até mim...',
+                        '...'
+                        'Hmmmm... estão viestes até mim...'
+                        'Saiba que desde sempre pus-me a observar a sua nação',
+                        'E a observar que em cada conduta da espécie humana',
+                        'Os fins de seu fracasso eram os mesmos que a tornava grande',
+                        'Agora olhe só para ti, em que condição que te encontras...',
+                        'Você e sua espécie:',
+                        'Destruíram com o próprio planeta...',
+                        'Humilhados, tomaram-me meus fiéis',
+                        'E depois de tudo isto ainda vinde a mim?',
+                        'O que achas que eu deveria fazer?',
+                        'Bem... Irei propor algo que eu sei que não deveria.',
+                        'O desespero, o desamparo, o ódio, a guerra...',
+                        'Todos os conflitos angustiantes da vida se encontram numa única indagação.',
+                        'Por quê?',
+                        'Por que viver assim, em injustiça e em desonestidade?',
+                        'Não seria bom se vivessemos todos juntos...',
+                        'No tipo de mundo onde todos são iguais',
+                        'E regidos pelo amor...',
+                        '. . .',
+                    ]
+                    if not texts.dialogue(text, True, True, True, "black", preludium):
+                        return True
+                    
+                    return True -5
 
                 if phase_result == -2:
                     return True #game is closed
@@ -122,8 +153,19 @@ def main():
                 pygame.display.update()
 
         #new game
-        elif title_screen_result == 1: #reboot global variables
-            print ("new game")
+        elif title_screen_result == 1:
+            #reboot global variables
+            variables.player_name = ''
+
+            variables.selected = {"sprite": [True], "engine": [True, False, False, False], "shield": [True, False, False, False]}
+            variables.bought = {"engine": [True, False, False, False], "shield": [True, False, False, False]}
+            
+            variables.points = 100
+            variables.clt_speed = 20
+            variables.lifebar = 10
+            variables.screens = [False, False, False, False, False]
+
+            return False
 
         #go to the market
         elif title_screen_result == 2:
@@ -131,5 +173,11 @@ def main():
             if market_result:
                 return True
 
-if main():
-    pygame.quit()
+while True:
+    main_result = main()
+    if main_result:
+        break
+
+variables.saveload.save_game_data([variables.points, variables.clt_speed, variables.lifebar, variables.screens, variables.selected, variables.bought, variables.player_name], ["points", "clt_speed", "lifebar", "screens", "selected", "bought", "player_name"])
+
+pygame.quit()

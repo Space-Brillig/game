@@ -61,7 +61,7 @@ shield_descriptions = ['Protege apenas a parte frontal da nave, o que o torna o 
 #load buttons' images
 buy_img = pygame.image.load('assets/sprites/buttons/buy.jpeg').convert_alpha()
 select_img = pygame.image.load('assets/sprites/buttons/select.jpeg').convert_alpha()
-selected_icon = pygame.image.load('assets/sprites/buttons/selected.jpeg').convert_alpha()
+selected_icon = pygame.image.load('assets/sprites/buttons/selected.webp').convert_alpha()
 selected_icon = pygame.transform.scale(selected_icon, (selected_icon.get_width() * 0.15, selected_icon.get_height() * 0.15))
 
 #create icons buttons
@@ -93,11 +93,11 @@ def Market():
 
         #buy or select engine
         if engine_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (1/3)):
-            upgrade_result = upgrade("engine", [80, 140, 200, 300], engine_img, BigPulseEngine, BurstEngine, SuperchargedEngine)
+            upgrade_result = upgrade("engine", [140, 200, 300], engine_img, BigPulseEngine, BurstEngine, SuperchargedEngine)
 
         #buy or select shield
-        if shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (2/3)):
-            upgrade_result = upgrade("shield", [150, 270, 390, 500], FrontShield, FrontSideShield, shield_img, InvisibilityShield)
+        if shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12 + 50, variables.SCREEN_HEIGHT * (2/3)):
+            upgrade_result = upgrade("shield", [270, 390, 500], FrontShield, FrontSideShield, shield_img, InvisibilityShield)
 
         if upgrade_result == False:
             return False #go back
@@ -110,32 +110,10 @@ def Market():
         
         pygame.display.update()
 
-def buy_select(buy_button, select_button, product, product_index, necessary, x, y):
-    #buy if it's not bought
-    if not variables.bought[product][product_index]:
-        if buy_button.draw(variables.screen, x, y):
-            
-            #buy if there's enough bitcoins
-            if variables.points >= necessary:
-                variables.bought[product][product_index] = True
-                variables.points -= necessary
-            
-            #throw alert message
-            else:
-                print ("not enough money!")
-
-    #select if not selected
-    elif not variables.selected[product][product_index]:
-        if select_button.draw(variables.screen, x, y):
-            for i in range (4):
-                variables.selected[product][i] = False
-            variables.selected[product][product_index] = True
-    
-    #display selected button
-    else:
-        variables.screen.blit(selected_icon, (x, y))
-
 def upgrade(product, necessary, icon1, icon2, icon3, icon4):
+
+    necessary_icon = [variables.font.render(str(necessary[i]), True, 'black') for i in range (3)]
+
     descriptions = [[], [], [], []]
     if product == 'engine':
         for i in range(4):
@@ -167,7 +145,7 @@ def upgrade(product, necessary, icon1, icon2, icon3, icon4):
         functions.display_bitcoins('black')
 
         #diselect
-        if engine_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (1/3)) or shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (2/3)):
+        if engine_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12, variables.SCREEN_HEIGHT * (1/3)) or shield_icon.draw(variables.screen, variables.SCREEN_WIDTH // 12 + 50, variables.SCREEN_HEIGHT * (2/3)):
             break
 
         #go back
@@ -178,28 +156,55 @@ def upgrade(product, necessary, icon1, icon2, icon3, icon4):
         variables.screen.blit(icon1, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 12))
         for i in range(len(descriptions[0])):
             variables.screen.blit(descriptions[0][i], (variables.SCREEN_WIDTH // 3 + 150, variables.SCREEN_HEIGHT // 10 + i*25))
-        buy_select(buy_button[0], select_button[0], product, 0, necessary[0], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 80)
+        buy_select(buy_button[0], select_button[0], product, 0, necessary[0], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 100)
         
         #2nd upgrade
-        variables.screen.blit(icon2, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 200))
+        variables.screen.blit(icon2, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 150))
+        variables.screen.blit(necessary_icon[0], (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 260))
+        variables.screen.blit(variables.bitcoin_img, (variables.SCREEN_WIDTH // 3 + 40, variables.SCREEN_HEIGHT // 10 + 240))
         for i in range(len(descriptions[1])):
             variables.screen.blit(descriptions[1][i], (variables.SCREEN_WIDTH // 3 + 150, variables.SCREEN_HEIGHT // 10 + 200 + i*25))
-        buy_select(buy_button[1], select_button[1], product, 1, necessary[1], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 280)
+        buy_select(buy_button[1], select_button[1], product, 1, necessary[0], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 300)
         
         #3rd upgrade
-        variables.screen.blit(icon3, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 400))
+        variables.screen.blit(icon3, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 350))
+        variables.screen.blit(necessary_icon[1], (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 460))
+        variables.screen.blit(variables.bitcoin_img, (variables.SCREEN_WIDTH // 3 + 40, variables.SCREEN_HEIGHT // 10 + 440))
         for i in range(len(descriptions[2])):
             variables.screen.blit(descriptions[2][i], (variables.SCREEN_WIDTH // 3 + 150, variables.SCREEN_HEIGHT // 10 + 400 + i*25))
-        buy_select(buy_button[2], select_button[2], product, 2, necessary[2], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 480)
+        buy_select(buy_button[2], select_button[2], product, 2, necessary[1], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT // 10 + 500)
         
         #4th upgrade
-        variables.screen.blit(icon4, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (5/6)))
+        variables.screen.blit(icon4, (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (5/6) - 50))
+        variables.screen.blit(necessary_icon[2], (variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (5/6) + 60))
+        variables.screen.blit(variables.bitcoin_img, (variables.SCREEN_WIDTH // 3 + 40, variables.SCREEN_HEIGHT * (5/6) + 40))
         for i in range(len(descriptions[3])):
             variables.screen.blit(descriptions[3][i], (variables.SCREEN_WIDTH // 3 + 150, variables.SCREEN_HEIGHT * (5/6) + i*25))
-        buy_select(buy_button[3], select_button[3], product, 3, necessary[3], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (5/6) + 80)
+        buy_select(buy_button[3], select_button[3], product, 3, necessary[2], variables.SCREEN_WIDTH // 3, variables.SCREEN_HEIGHT * (5/6) + 100)
 
         #quit game
         if functions.event_handlers():
             return True
 
         pygame.display.update()
+
+def buy_select(buy_button, select_button, product, product_index, necessary, x, y):
+    #buy if it's not bought
+    if not variables.bought[product][product_index]:
+        if buy_button.draw(variables.screen, x, y):
+            
+            #buy if there's enough bitcoins
+            if variables.points >= necessary:
+                variables.bought[product][product_index] = True
+                variables.points -= necessary
+
+    #select if not selected
+    elif not variables.selected[product][product_index]:
+        if select_button.draw(variables.screen, x, y):
+            for i in range (4):
+                variables.selected[product][i] = False
+            variables.selected[product][product_index] = True
+    
+    #display selected button
+    else:
+        variables.screen.blit(selected_icon, (x, y))

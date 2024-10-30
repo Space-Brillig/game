@@ -161,14 +161,14 @@ def Phase(background, c_speed, props, quota, spawn_event, song):
     #phase final dialogue
     if action == 0:
         text = [
-            'Muito bom, [player_name]!',
+            f'Muito bom, {variables.player_name}!',
             'Já deu a nossa cota por hoje.',
             'Vamos voltar para a estação espacial...',
             '                             Phase passed'
         ]
     elif action == 1:
         text = [
-            'Augh... Vamos recuar, [player_name]!',
+            f'Augh... Vamos recuar, {variables.player_name}!',
             'Esta nave precisa de reparos...',
             '                             Phase not passed'
         ]

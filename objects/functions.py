@@ -50,6 +50,7 @@ def event_handlers():
 
 #display bitcoins
 def display_bitcoins(color):
-    points_icon = variables.font.render(f'BITCOINS: {variables.points}', True, color)
+    points_icon = variables.font.render(str(variables.points), True, color)
     points_width = points_icon.get_width()
-    variables.screen.blit(points_icon, (variables.SCREEN_WIDTH - points_width - 10, 10))
+    variables.screen.blit(points_icon, (variables.SCREEN_WIDTH - points_width - 20, 12))
+    variables.screen.blit(variables.bitcoin_img, (variables.SCREEN_WIDTH - points_width - 75, -5))

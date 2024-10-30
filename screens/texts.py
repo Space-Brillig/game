@@ -1,5 +1,6 @@
 import pygame
 import objects.variables as variables
+import objects.input as input
 import objects.functions as functions
 
 pygame.mixer.init()
@@ -13,7 +14,6 @@ def dialogue(text, background, text_box, hasfade, color, song):
     #load background image
     if not background == False:
         bg = pygame.image.load('assets/sprites/background/initialscenebackground.png')
-        bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
 
     if not song == False:
         song.play(-1)
@@ -28,15 +28,16 @@ def dialogue(text, background, text_box, hasfade, color, song):
         #set background
         if not background == False:
             functions.draw_bg(bg)
+            bg = pygame.transform.scale(bg, (variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT))
         else:
             pygame.draw.rect(variables.screen, 'black', [0, 0, variables.SCREEN_WIDTH, variables.SCREEN_HEIGHT])
 
         #set fps
         variables.clock.tick(60)
 
-        #set box text
+        #set textbox
         if not text_box == False:
-            pygame.draw.rect(variables.screen, 'grey', [0, 500, 800, 300])
+            pygame.draw.rect(variables.screen, 'grey', [0, 500, variables.SCREEN_WIDTH, 500])
 
         #check if sentence is fully drawn into the screen
         if counter < speed * len(text[index]):
@@ -50,6 +51,12 @@ def dialogue(text, background, text_box, hasfade, color, song):
             index += 1
             done = False
             counter = 0
+
+        #get player's name input
+        if not background == False and index == 2 and variables.player_name == '':
+            variables.player_name = input.Input()
+            text[3] = f'Ah... sim... deixe-me te contar uma história, {variables.player_name}...'
+            index += 1
 
         #quit game
         if functions.event_handlers():
