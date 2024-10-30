@@ -5,7 +5,7 @@ import objects.variables as variables
 class Alien(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("assets/sprites/alien/shrek.jpeg").convert_alpha()
+        self.image = pygame.image.load("assets/sprites/alien/ET.png").convert_alpha()
         self.width = self.image.get_width()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
